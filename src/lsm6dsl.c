@@ -16,7 +16,7 @@ uint8_t LSM6DSL_Who_Am_I(void)
 
 	return I2C_RxBuffer[0];
 }
-
+//funzione di lettura dati accelerometro
 void LSM6DSL_ReadAcceleration(float vect[])
 {
 	const uint8_t	I2C_RXBUFFERSIZE = 2;
@@ -44,16 +44,9 @@ void LSM6DSL_ReadAcceleration(float vect[])
 	int16_t dataZ = (((uint16_t)I2C_RxBufferZ[1]<<8 | I2C_RxBufferZ[0]));
 	Z_acc = (float)dataZ;
 
-/*
-	vect[0]=X_acc*acc_sensitivity/1000;
-	vect[1]=Y_acc*acc_sensitivity/1000;
-	vect[2]=Z_acc*acc_sensitivity/1000;
-*/
-
 	vect[0]=X_acc*acc_sens_table/1000;
 	vect[1]=Y_acc*acc_sens_table/1000;
 	vect[2]=Z_acc*acc_sens_table/1000;
-
 }
 
 //Funzione di lettura dei dati rilevati dal giroscopio
@@ -85,12 +78,6 @@ void LSM6DSL_ReadGyro(float vect[])
 	vect[0]=X_gyr*gyro_sensitivity/1000;
 	vect[1]=Y_gyr*gyro_sensitivity/1000;
 	vect[2]=Z_gyr*gyro_sensitivity/1000;
-
-/*
-	vect[0]=X_gyr;
-	vect[1]=Y_gyr;
-	vect[2]=Z_gyr;
-*/
 }
 
 

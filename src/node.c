@@ -22,8 +22,6 @@ float ftanh(float x)
 void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
 	float hValues[nOfHiddenNodes] = {0};
-	float hSigmoidValues[nOfHiddenNodes] = { 0 };
-
 	float oValues[nOfOutputNodes] = { 0 };
 	/*
 	for (int h = 0; h < nOfHiddenNodes; h++)//per ogni nodo del primo livello
@@ -54,11 +52,9 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 			hValues[h] = hValues[h] + (in[i].value*in[i].weights[h]);
 
 			//applicazione della funzione di attivazione
-			hSigmoidValues[h]= fsigmoid(hValues[h]);
 			hn[h].value = fsigmoid(hValues[h]);
 		}
 	}
-	//int placeholder = 0;
 	for (int o = 0; o < nOfOutputNodes; o++)
 	{
 		//bias dello specifico nodo di output
@@ -71,7 +67,6 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 			on[o].value = fsigmoid(oValues[o]);
 		}
 	}
-	int placeholder2 = 0;
 
 
 	//va ora applicata la sigmoide ai valori dei nodi hidden
@@ -152,517 +147,517 @@ void randomSetupNodes(InputNode in[], HiddenNode hn[], OutputNode on[])
 //nel caso in cui il training set occupi troppo spazio
 void loadTrainedNetwork(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
-	in[0].weights[0] = 0.298679918;
-	in[0].weights[1] = 0.233234644;
-	in[0].weights[2] = -0.499638140;
-	in[0].weights[3] = -0.032317653;
-	in[0].weights[4] = -0.364448339;
-	in[0].weights[5] = -0.078550749;
-	in[0].weights[6] = 0.053459961;
-	in[0].weights[7] = 0.207665265;
-	in[0].weights[8] = -0.433739692;
-	in[0].weights[9] = 0.390439838;
-	in[0].weights[10] = 0.159987882;
-	in[0].weights[11] = -0.238242850;
-	in[0].weights[12] = -0.012882762;
-	in[0].weights[13] = -0.099238135;
-	in[0].weights[14] = -0.483019859;
-	in[0].weights[15] = 0.178416520;
-	in[0].weights[16] = -0.177899376;
-	in[0].weights[17] = -0.389987439;
-	in[0].weights[18] = 0.315950364;
-	in[0].weights[19] = -0.473218113;
-	in[0].weights[20] = -0.122292295;
-	in[0].weights[21] = 0.189441904;
-	in[0].weights[22] = -0.057304129;
-	in[0].weights[23] = -0.144892231;
-	in[0].weights[24] = -0.462774545;
-	in[0].weights[25] = -0.467921108;
-	in[0].weights[26] = -0.464856625;
-	in[0].weights[27] = 0.130442247;
-	in[0].weights[28] = -0.362654716;
-	in[0].weights[29] = 0.268065631;
-	in[1].weights[0] = -0.103383452;
-	in[1].weights[1] = 0.632870972;
-	in[1].weights[2] = 0.131639749;
-	in[1].weights[3] = 0.206356689;
-	in[1].weights[4] = -0.103117190;
-	in[1].weights[5] = -0.012760320;
-	in[1].weights[6] = -0.309541672;
-	in[1].weights[7] = 0.111338802;
-	in[1].weights[8] = -0.255277187;
-	in[1].weights[9] = 0.077877425;
-	in[1].weights[10] = -0.168847382;
-	in[1].weights[11] = -0.164932102;
-	in[1].weights[12] = -0.458533704;
-	in[1].weights[13] = 0.151391119;
-	in[1].weights[14] = 0.466580242;
-	in[1].weights[15] = 0.048460860;
-	in[1].weights[16] = -0.000953870;
-	in[1].weights[17] = 0.205308616;
-	in[1].weights[18] = -0.392794639;
-	in[1].weights[19] = -0.286327600;
-	in[1].weights[20] = -0.383423269;
-	in[1].weights[21] = 0.121520676;
-	in[1].weights[22] = 0.135498449;
-	in[1].weights[23] = -0.055282123;
-	in[1].weights[24] = 0.161460996;
-	in[1].weights[25] = 0.315578669;
-	in[1].weights[26] = -0.226269811;
-	in[1].weights[27] = 0.088356845;
-	in[1].weights[28] = -0.215383992;
-	in[1].weights[29] = 0.307406247;
-	in[2].weights[0] = -0.452082723;
-	in[2].weights[1] = 0.563316584;
-	in[2].weights[2] = 0.121926151;
-	in[2].weights[3] = 0.232446790;
-	in[2].weights[4] = 0.275028050;
-	in[2].weights[5] = 0.144232720;
-	in[2].weights[6] = 0.370244652;
-	in[2].weights[7] = 0.485459775;
-	in[2].weights[8] = 0.274136633;
-	in[2].weights[9] = -0.481837690;
-	in[2].weights[10] = -0.025428649;
-	in[2].weights[11] = 0.056047738;
-	in[2].weights[12] = -0.017020287;
-	in[2].weights[13] = -0.265612572;
-	in[2].weights[14] = -0.202069551;
-	in[2].weights[15] = -0.281805664;
-	in[2].weights[16] = -0.170788333;
-	in[2].weights[17] = -0.058956891;
-	in[2].weights[18] = -0.404003948;
-	in[2].weights[19] = 0.151602238;
-	in[2].weights[20] = -0.335738301;
-	in[2].weights[21] = 0.181543365;
-	in[2].weights[22] = 0.080301628;
-	in[2].weights[23] = -0.021823702;
-	in[2].weights[24] = -0.218096092;
-	in[2].weights[25] = -0.159429774;
-	in[2].weights[26] = 0.182321504;
-	in[2].weights[27] = 0.272455275;
-	in[2].weights[28] = 0.002737682;
-	in[2].weights[29] = 0.396424353;
-	in[3].weights[0] = -0.463637114;
-	in[3].weights[1] = -0.344259709;
-	in[3].weights[2] = 0.451770812;
-	in[3].weights[3] = 0.217126444;
-	in[3].weights[4] = -0.276219636;
-	in[3].weights[5] = 0.428266466;
-	in[3].weights[6] = 0.297734082;
-	in[3].weights[7] = -0.229979262;
-	in[3].weights[8] = -0.178777203;
-	in[3].weights[9] = 0.066535667;
-	in[3].weights[10] = -0.010723459;
-	in[3].weights[11] = 0.288285077;
-	in[3].weights[12] = 0.139169574;
-	in[3].weights[13] = 0.038564954;
-	in[3].weights[14] = 0.158242315;
-	in[3].weights[15] = 0.347001672;
-	in[3].weights[16] = 0.141776472;
-	in[3].weights[17] = 0.043598603;
-	in[3].weights[18] = -0.363562018;
-	in[3].weights[19] = 0.036359079;
-	in[3].weights[20] = -0.044148710;
-	in[3].weights[21] = 0.368984401;
-	in[3].weights[22] = 0.060892608;
-	in[3].weights[23] = -0.260052562;
-	in[3].weights[24] = 0.173930973;
-	in[3].weights[25] = -0.309402734;
-	in[3].weights[26] = -0.044020280;
-	in[3].weights[27] = -0.077673770;
-	in[3].weights[28] = -0.097133324;
-	in[3].weights[29] = 0.245849729;
-	in[4].weights[0] = -0.059993282;
-	in[4].weights[1] = 0.048116121;
-	in[4].weights[2] = -0.202862546;
-	in[4].weights[3] = 0.146287337;
-	in[4].weights[4] = -0.187660322;
-	in[4].weights[5] = -0.589930058;
-	in[4].weights[6] = -0.046291728;
-	in[4].weights[7] = 0.303407401;
-	in[4].weights[8] = 0.333769679;
-	in[4].weights[9] = -0.106057480;
-	in[4].weights[10] = 0.069921330;
-	in[4].weights[11] = 0.273412436;
-	in[4].weights[12] = -0.572667599;
-	in[4].weights[13] = -0.379103839;
-	in[4].weights[14] = 0.140116662;
-	in[4].weights[15] = 0.177572727;
-	in[4].weights[16] = 0.144976884;
-	in[4].weights[17] = -0.106008291;
-	in[4].weights[18] = -0.351609141;
-	in[4].weights[19] = 0.476847917;
-	in[4].weights[20] = -0.200289518;
-	in[4].weights[21] = 0.443282157;
-	in[4].weights[22] = 0.087015912;
-	in[4].weights[23] = 0.623329937;
-	in[4].weights[24] = 0.205900818;
-	in[4].weights[25] = -0.174284741;
-	in[4].weights[26] = 0.544271111;
-	in[4].weights[27] = -0.016290780;
-	in[4].weights[28] = 0.000815878;
-	in[4].weights[29] = -0.129465327;
-	in[5].weights[0] = 0.302817374;
-	in[5].weights[1] = 0.359448075;
-	in[5].weights[2] = -0.033777896;
-	in[5].weights[3] = 0.108742885;
-	in[5].weights[4] = -0.134030968;
-	in[5].weights[5] = -0.074961275;
-	in[5].weights[6] = -0.069505379;
-	in[5].weights[7] = -0.213132128;
-	in[5].weights[8] = 0.149892673;
-	in[5].weights[9] = -0.337291509;
-	in[5].weights[10] = 0.028637262;
-	in[5].weights[11] = 0.072045892;
-	in[5].weights[12] = -0.584293723;
-	in[5].weights[13] = 0.282945693;
-	in[5].weights[14] = -0.045037355;
-	in[5].weights[15] = 0.535842657;
-	in[5].weights[16] = -0.226276904;
-	in[5].weights[17] = 0.534753978;
-	in[5].weights[18] = -0.388193280;
-	in[5].weights[19] = 0.002276185;
-	in[5].weights[20] = -0.554017663;
-	in[5].weights[21] = 0.213875055;
-	in[5].weights[22] = -0.011452426;
-	in[5].weights[23] = 0.486987889;
-	in[5].weights[24] = -0.266950458;
-	in[5].weights[25] = -0.455688268;
-	in[5].weights[26] = 0.313526362;
-	in[5].weights[27] = -0.043477703;
-	in[5].weights[28] = 0.225565374;
-	in[5].weights[29] = -0.270103842;
-	in[6].weights[0] = -0.310734034;
-	in[6].weights[1] = -1.358307362;
-	in[6].weights[2] = -0.618207216;
-	in[6].weights[3] = -0.983397365;
-	in[6].weights[4] = 1.123868465;
-	in[6].weights[5] = 0.925191641;
-	in[6].weights[6] = -0.086195350;
-	in[6].weights[7] = -0.156288251;
-	in[6].weights[8] = -1.000542879;
-	in[6].weights[9] = -0.161364242;
-	in[6].weights[10] = -0.103153855;
-	in[6].weights[11] = 0.626170874;
-	in[6].weights[12] = 0.782140553;
-	in[6].weights[13] = -0.549396276;
-	in[6].weights[14] = -0.352567792;
-	in[6].weights[15] = -0.359080583;
-	in[6].weights[16] = -0.432648987;
-	in[6].weights[17] = -0.862369239;
-	in[6].weights[18] = 0.920904994;
-	in[6].weights[19] = 0.410472244;
-	in[6].weights[20] = 0.402677953;
-	in[6].weights[21] = 0.087390222;
-	in[6].weights[22] = -0.156083763;
-	in[6].weights[23] = -0.877611220;
-	in[6].weights[24] = -0.661381364;
-	in[6].weights[25] = 0.515573919;
-	in[6].weights[26] = -0.314878404;
-	in[6].weights[27] = 0.661427975;
-	in[6].weights[28] = -0.372585088;
-	in[6].weights[29] = 0.629757643;
-	in[7].weights[0] = 0.512139797;
-	in[7].weights[1] = -0.888229847;
-	in[7].weights[2] = 0.247477293;
-	in[7].weights[3] = -0.818851173;
-	in[7].weights[4] = 0.204235047;
-	in[7].weights[5] = 0.187741622;
-	in[7].weights[6] = -0.068377428;
-	in[7].weights[7] = 0.309100330;
-	in[7].weights[8] = -0.630897760;
-	in[7].weights[9] = -0.284093499;
-	in[7].weights[10] = -0.135356560;
-	in[7].weights[11] = 0.410256594;
-	in[7].weights[12] = 0.598914921;
-	in[7].weights[13] = -0.596395075;
-	in[7].weights[14] = -0.065726683;
-	in[7].weights[15] = -0.891050100;
-	in[7].weights[16] = -0.576501548;
-	in[7].weights[17] = -0.820380986;
-	in[7].weights[18] = 0.146643475;
-	in[7].weights[19] = -0.001473216;
-	in[7].weights[20] = 0.701486349;
-	in[7].weights[21] = -0.026652748;
-	in[7].weights[22] = -0.075623617;
-	in[7].weights[23] = -0.875320494;
-	in[7].weights[24] = -0.067461498;
-	in[7].weights[25] = -0.034712903;
-	in[7].weights[26] = -0.096100524;
-	in[7].weights[27] = -0.297278315;
-	in[7].weights[28] = -0.131248161;
-	in[7].weights[29] = 0.161188200;
-	in[8].weights[0] = 0.091989495;
-	in[8].weights[1] = -0.106581137;
-	in[8].weights[2] = -0.425456047;
-	in[8].weights[3] = 0.021589004;
-	in[8].weights[4] = 0.456879348;
-	in[8].weights[5] = 0.529982150;
-	in[8].weights[6] = 0.395375282;
-	in[8].weights[7] = -0.095820241;
-	in[8].weights[8] = 0.252394915;
-	in[8].weights[9] = -0.034014612;
-	in[8].weights[10] = -0.440192133;
-	in[8].weights[11] = 0.075942226;
-	in[8].weights[12] = 0.258185953;
-	in[8].weights[13] = -0.002403909;
-	in[8].weights[14] = 0.324189603;
-	in[8].weights[15] = -0.071003355;
-	in[8].weights[16] = 0.446273178;
-	in[8].weights[17] = -0.438988119;
-	in[8].weights[18] = -0.256372154;
-	in[8].weights[19] = 0.266452730;
-	in[8].weights[20] = -0.006343003;
-	in[8].weights[21] = -0.035766486;
-	in[8].weights[22] = 0.289160669;
-	in[8].weights[23] = -0.069299109;
-	in[8].weights[24] = 0.168638691;
-	in[8].weights[25] = -0.341145039;
-	in[8].weights[26] = -0.220166966;
-	in[8].weights[27] = 0.442091048;
-	in[8].weights[28] = -0.188888147;
-	in[8].weights[29] = -0.181181028;
-	in[9].weights[0] = 0.563266277;
-	in[9].weights[1] = -1.273309708;
-	in[9].weights[2] = -0.419207931;
-	in[9].weights[3] = -1.037397146;
-	in[9].weights[4] = 0.469869345;
-	in[9].weights[5] = 0.220188946;
-	in[9].weights[6] = -0.147196233;
-	in[9].weights[7] = -0.557287276;
-	in[9].weights[8] = -0.718542337;
-	in[9].weights[9] = 0.339632869;
-	in[9].weights[10] = -0.906152308;
-	in[9].weights[11] = 0.001170957;
-	in[9].weights[12] = 0.405138433;
-	in[9].weights[13] = 0.108606100;
-	in[9].weights[14] = -0.514569223;
-	in[9].weights[15] = -0.953081369;
-	in[9].weights[16] = -0.023649246;
-	in[9].weights[17] = -0.813369155;
-	in[9].weights[18] = 1.173904181;
-	in[9].weights[19] = -0.254527748;
-	in[9].weights[20] = 0.740676403;
-	in[9].weights[21] = 0.088390201;
-	in[9].weights[22] = 0.754917264;
-	in[9].weights[23] = -0.987610877;
-	in[9].weights[24] = -0.454378545;
-	in[9].weights[25] = 0.522574246;
-	in[9].weights[26] = -0.345878303;
-	in[9].weights[27] = -0.058568940;
-	in[9].weights[28] = -0.703584015;
-	in[9].weights[29] = 0.637757421;
-	in[10].weights[0] = 0.272137672;
-	in[10].weights[1] = -0.998229504;
-	in[10].weights[2] = -0.650523365;
-	in[10].weights[3] = -0.350852191;
-	in[10].weights[4] = 0.378236502;
-	in[10].weights[5] = 1.009741306;
-	in[10].weights[6] = 0.493621945;
-	in[10].weights[7] = 0.209099099;
-	in[10].weights[8] = -0.093898408;
-	in[10].weights[9] = -0.163093090;
-	in[10].weights[10] = -0.201356336;
-	in[10].weights[11] = 0.383256644;
-	in[10].weights[12] = 0.976914883;
-	in[10].weights[13] = 0.088603310;
-	in[10].weights[14] = -0.457726240;
-	in[10].weights[15] = -0.761049628;
-	in[10].weights[16] = -0.413500905;
-	in[10].weights[17] = -0.968381226;
-	in[10].weights[18] = 0.978642702;
-	in[10].weights[19] = 0.268526524;
-	in[10].weights[20] = 0.839486539;
-	in[10].weights[21] = -0.262652367;
-	in[10].weights[22] = -0.018623836;
-	in[10].weights[23] = -0.491317838;
-	in[10].weights[24] = -0.684461057;
-	in[10].weights[25] = -0.096712470;
-	in[10].weights[26] = -0.778102398;
-	in[10].weights[27] = 0.419721693;
-	in[10].weights[28] = -0.473248512;
-	in[10].weights[29] = 0.623187304;
-	in[11].weights[0] = -0.054010674;
-	in[11].weights[1] = 0.023419119;
-	in[11].weights[2] = 0.107544065;
-	in[11].weights[3] = 0.346589714;
-	in[11].weights[4] = -0.150119737;
-	in[11].weights[5] = 0.424980849;
-	in[11].weights[6] = 0.484375268;
-	in[11].weights[7] = -0.197821125;
-	in[11].weights[8] = -0.635604680;
-	in[11].weights[9] = 0.354984820;
-	in[11].weights[10] = -0.231193602;
-	in[11].weights[11] = -0.440057784;
-	in[11].weights[12] = 0.147186249;
-	in[11].weights[13] = -0.313403934;
-	in[11].weights[14] = -0.090810254;
-	in[11].weights[15] = 0.100996636;
-	in[11].weights[16] = 0.133276075;
-	in[11].weights[17] = -0.311988205;
-	in[11].weights[18] = -0.159372821;
-	in[11].weights[19] = 0.021451807;
-	in[11].weights[20] = 0.624655664;
-	in[11].weights[21] = 0.259233207;
-	in[11].weights[22] = 0.115161322;
-	in[11].weights[23] = -0.268298388;
-	in[11].weights[24] = 0.054638732;
-	in[11].weights[25] = 0.141856194;
-	in[11].weights[26] = -0.253166646;
-	in[11].weights[27] = 0.379091024;
-	in[11].weights[28] = 0.279111922;
-	in[11].weights[29] = 0.586819708;
-	in[12].weights[0] = -0.208343536;
-	in[12].weights[1] = -0.355045706;
-	in[12].weights[2] = 0.203252912;
-	in[12].weights[3] = 0.243439704;
-	in[12].weights[4] = -0.169950545;
-	in[12].weights[5] = -0.262978017;
-	in[12].weights[6] = -0.061001830;
-	in[12].weights[7] = -0.080486029;
-	in[12].weights[8] = -0.026517166;
-	in[12].weights[9] = 0.222292662;
-	in[12].weights[10] = -0.423190206;
-	in[12].weights[11] = -0.419190317;
-	in[12].weights[12] = -0.157450244;
-	in[12].weights[13] = -0.132281765;
-	in[12].weights[14] = 0.377526999;
-	in[12].weights[15] = 0.084352151;
-	in[12].weights[16] = -0.094584286;
-	in[12].weights[17] = -0.420266628;
-	in[12].weights[18] = -0.161231339;
-	in[12].weights[19] = 0.386589170;
-	in[12].weights[20] = 0.353526384;
-	in[12].weights[21] = 0.275294393;
-	in[12].weights[22] = 0.493636340;
-	in[12].weights[23] = 0.205040216;
-	in[12].weights[24] = -0.270714521;
-	in[12].weights[25] = -0.249416977;
-	in[12].weights[26] = -0.416325420;
-	in[12].weights[27] = 0.374832511;
-	in[12].weights[28] = -0.109493688;
-	in[12].weights[29] = -0.081917062;
-	in[13].weights[0] = -0.327163041;
-	in[13].weights[1] = 0.049377833;
-	in[13].weights[2] = 0.400851429;
-	in[13].weights[3] = -0.128908157;
-	in[13].weights[4] = -0.219474450;
-	in[13].weights[5] = -0.178863779;
-	in[13].weights[6] = 0.052775797;
-	in[13].weights[7] = 0.124659956;
-	in[13].weights[8] = -0.109049037;
-	in[13].weights[9] = -0.106523447;
-	in[13].weights[10] = -0.332614779;
-	in[13].weights[11] = 0.466283232;
-	in[13].weights[12] = -0.054608338;
-	in[13].weights[13] = 0.273882091;
-	in[13].weights[14] = 0.280260265;
-	in[13].weights[15] = -0.371694326;
-	in[13].weights[16] = -0.271627992;
-	in[13].weights[17] = -0.111803941;
-	in[13].weights[18] = -0.152288124;
-	in[13].weights[19] = 0.111649156;
-	in[13].weights[20] = 0.169802830;
-	in[13].weights[21] = -0.417619914;
-	in[13].weights[22] = -0.052726287;
-	in[13].weights[23] = -0.111971982;
-	in[13].weights[24] = -0.147417381;
-	in[13].weights[25] = -0.060022097;
-	in[13].weights[26] = 0.098342665;
-	in[13].weights[27] = -0.126946867;
-	in[13].weights[28] = 0.256618977;
-	in[13].weights[29] = 0.308392853;
-	in[14].weights[0] = 0.415110588;
-	in[14].weights[1] = -0.396224856;
-	in[14].weights[2] = 0.119160220;
-	in[14].weights[3] = 0.148387596;
-	in[14].weights[4] = 0.085760258;
-	in[14].weights[5] = 0.351525247;
-	in[14].weights[6] = 0.352579653;
-	in[14].weights[7] = 0.477142096;
-	in[14].weights[8] = 0.111707859;
-	in[14].weights[9] = -0.039481722;
-	in[14].weights[10] = -0.341948926;
-	in[14].weights[11] = 0.279608727;
-	in[14].weights[12] = 0.106807545;
-	in[14].weights[13] = -0.292292923;
-	in[14].weights[14] = -0.078844875;
-	in[14].weights[15] = 0.433007509;
-	in[14].weights[16] = -0.479802251;
-	in[14].weights[17] = -0.124502026;
-	in[14].weights[18] = 0.193311989;
-	in[14].weights[19] = 0.080716208;
-	in[14].weights[20] = -0.239186078;
-	in[14].weights[21] = 0.399363220;
-	in[14].weights[22] = 0.289110601;
-	in[14].weights[23] = 0.280884653;
-	in[14].weights[24] = 0.005417911;
-	in[14].weights[25] = -0.267485708;
-	in[14].weights[26] = -0.254339546;
-	in[14].weights[27] = 0.149530888;
-	in[14].weights[28] = 0.416229337;
-	in[14].weights[29] = 0.248738945;
-	hn[0].weights[0] = -0.471496582;
-	hn[1].weights[0] = 2.647963524;
-	hn[2].weights[0] = 0.735710025;
-	hn[3].weights[0] = 1.585974813;
-	hn[4].weights[0] = -1.284258723;
-	hn[5].weights[0] = -1.518894315;
-	hn[6].weights[0] = -0.248025984;
-	hn[7].weights[0] = 0.200609997;
-	hn[8].weights[0] = 1.444005370;
-	hn[9].weights[0] = -0.034713108;
-	hn[10].weights[0] = 0.924279273;
-	hn[11].weights[0] = -0.498397797;
-	hn[12].weights[0] = -1.598838449;
-	hn[13].weights[0] = 0.497636259;
-	hn[14].weights[0] = 0.608812153;
-	hn[15].weights[0] = 1.423295021;
-	hn[16].weights[0] = 0.592789769;
-	hn[17].weights[0] = 2.198136806;
-	hn[18].weights[0] = -1.740735650;
-	hn[19].weights[0] = -0.177196309;
-	hn[20].weights[0] = -1.613554120;
-	hn[21].weights[0] = 0.072326086;
-	hn[22].weights[0] = -0.444055289;
-	hn[23].weights[0] = 1.823976755;
-	hn[24].weights[0] = 1.038480997;
-	hn[25].weights[0] = -0.489793003;
-	hn[26].weights[0] = 1.063783169;
-	hn[27].weights[0] = -0.542720318;
-	hn[28].weights[0] = 0.767476439;
-	hn[29].weights[0] = -1.124861956;
-	hn[0].bias = -0.064389415;
-	hn[1].bias = 0.743061721;
-	hn[2].bias = 0.078234889;
-	hn[3].bias = 0.270784050;
-	hn[4].bias = -0.167233765;
-	hn[5].bias = -0.317133635;
-	hn[6].bias = -0.029119516;
-	hn[7].bias = -0.016436083;
-	hn[8].bias = 0.261424661;
-	hn[9].bias = -0.017835239;
-	hn[10].bias = 0.072396368;
-	hn[11].bias = -0.032868288;
-	hn[12].bias = -0.091181792;
-	hn[13].bias = -0.001225330;
-	hn[14].bias = 0.025523838;
-	hn[15].bias = 0.128911346;
-	hn[16].bias = 0.033433676;
-	hn[17].bias = 0.690389037;
-	hn[18].bias = -0.181317255;
-	hn[19].bias = -0.029987108;
-	hn[20].bias = -0.201787755;
-	hn[21].bias = -0.023153871;
-	hn[22].bias = -0.009057125;
-	hn[23].bias = 0.241171002;
-	hn[24].bias = 0.180428118;
-	hn[25].bias = -0.010818239;
-	hn[26].bias = 0.068628788;
-	hn[27].bias = -0.054409750;
-	hn[28].bias = 0.027892277;
-	hn[29].bias = -0.130726546;
-	on[0].bias = -0.000224225;
+	in[0].weights[0]=0.356179;
+	in[0].weights[1]=0.079830;
+	in[0].weights[2]=-0.275275;
+	in[0].weights[3]=-0.394161;
+	in[0].weights[4]=-0.270430;
+	in[0].weights[5]=-0.239110;
+	in[0].weights[6]=-0.458076;
+	in[0].weights[7]=0.362049;
+	in[0].weights[8]=0.109235;
+	in[0].weights[9]=0.078153;
+	in[0].weights[10]=0.259249;
+	in[0].weights[11]=0.088486;
+	in[0].weights[12]=0.294910;
+	in[0].weights[13]=-0.251228;
+	in[0].weights[14]=0.630161;
+	in[0].weights[15]=-0.336279;
+	in[0].weights[16]=-0.294884;
+	in[0].weights[17]=0.095464;
+	in[0].weights[18]=0.485024;
+	in[0].weights[19]=-0.040717;
+	in[0].weights[20]=0.056691;
+	in[0].weights[21]=0.283034;
+	in[0].weights[22]=0.204336;
+	in[0].weights[23]=-0.047275;
+	in[0].weights[24]=-0.219970;
+	in[0].weights[25]=0.225574;
+	in[0].weights[26]=-0.151010;
+	in[0].weights[27]=0.405041;
+	in[0].weights[28]=-0.060781;
+	in[0].weights[29]=0.197263;
+	in[1].weights[0]=0.494354;
+	in[1].weights[1]=-0.064714;
+	in[1].weights[2]=-0.358175;
+	in[1].weights[3]=0.240151;
+	in[1].weights[4]=-0.228639;
+	in[1].weights[5]=-0.108284;
+	in[1].weights[6]=-0.535278;
+	in[1].weights[7]=0.323805;
+	in[1].weights[8]=-0.074381;
+	in[1].weights[9]=-0.371049;
+	in[1].weights[10]=-0.125576;
+	in[1].weights[11]=-0.336910;
+	in[1].weights[12]=0.203597;
+	in[1].weights[13]=0.163451;
+	in[1].weights[14]=0.239151;
+	in[1].weights[15]=0.602093;
+	in[1].weights[16]=-0.138834;
+	in[1].weights[17]=-0.325683;
+	in[1].weights[18]=-0.225787;
+	in[1].weights[19]=0.117534;
+	in[1].weights[20]=0.185210;
+	in[1].weights[21]=0.251437;
+	in[1].weights[22]=0.297626;
+	in[1].weights[23]=0.219492;
+	in[1].weights[24]=-0.088664;
+	in[1].weights[25]=0.092669;
+	in[1].weights[26]=0.220292;
+	in[1].weights[27]=0.003039;
+	in[1].weights[28]=0.070144;
+	in[1].weights[29]=0.279962;
+	in[2].weights[0]=0.245655;
+	in[2].weights[1]=0.204925;
+	in[2].weights[2]=-0.038552;
+	in[2].weights[3]=-0.287033;
+	in[2].weights[4]=-0.038630;
+	in[2].weights[5]=0.133625;
+	in[2].weights[6]=-0.305868;
+	in[2].weights[7]=0.285294;
+	in[2].weights[8]=-0.208608;
+	in[2].weights[9]=-0.249259;
+	in[2].weights[10]=-0.173537;
+	in[2].weights[11]=0.363070;
+	in[2].weights[12]=0.082519;
+	in[2].weights[13]=-0.308168;
+	in[2].weights[14]=0.384349;
+	in[2].weights[15]=0.375951;
+	in[2].weights[16]=-0.064509;
+	in[2].weights[17]=-0.630458;
+	in[2].weights[18]=0.317069;
+	in[2].weights[19]=0.351661;
+	in[2].weights[20]=-0.523641;
+	in[2].weights[21]=-0.276591;
+	in[2].weights[22]=-0.183754;
+	in[2].weights[23]=-0.366903;
+	in[2].weights[24]=-0.490725;
+	in[2].weights[25]=-0.150780;
+	in[2].weights[26]=-0.164889;
+	in[2].weights[27]=0.216319;
+	in[2].weights[28]=0.678532;
+	in[2].weights[29]=0.049410;
+	in[3].weights[0]=0.283662;
+	in[3].weights[1]=0.431332;
+	in[3].weights[2]=0.068489;
+	in[3].weights[3]=0.347900;
+	in[3].weights[4]=0.005846;
+	in[3].weights[5]=-0.448490;
+	in[3].weights[6]=0.242256;
+	in[3].weights[7]=-0.172291;
+	in[3].weights[8]=0.113719;
+	in[3].weights[9]=-0.198809;
+	in[3].weights[10]=-0.302561;
+	in[3].weights[11]=0.138995;
+	in[3].weights[12]=0.455533;
+	in[3].weights[13]=0.055108;
+	in[3].weights[14]=0.414130;
+	in[3].weights[15]=0.191130;
+	in[3].weights[16]=-0.302797;
+	in[3].weights[17]=0.348094;
+	in[3].weights[18]=0.078940;
+	in[3].weights[19]=-0.040113;
+	in[3].weights[20]=-0.538938;
+	in[3].weights[21]=0.369447;
+	in[3].weights[22]=0.360639;
+	in[3].weights[23]=-0.402769;
+	in[3].weights[24]=0.423277;
+	in[3].weights[25]=0.001239;
+	in[3].weights[26]=-0.461697;
+	in[3].weights[27]=-0.295343;
+	in[3].weights[28]=-0.067208;
+	in[3].weights[29]=-0.325520;
+	in[4].weights[0]=0.274448;
+	in[4].weights[1]=-0.413356;
+	in[4].weights[2]=0.480500;
+	in[4].weights[3]=0.295510;
+	in[4].weights[4]=0.373276;
+	in[4].weights[5]=-0.021228;
+	in[4].weights[6]=0.480013;
+	in[4].weights[7]=-0.349885;
+	in[4].weights[8]=0.401101;
+	in[4].weights[9]=-0.409053;
+	in[4].weights[10]=0.404496;
+	in[4].weights[11]=-0.057150;
+	in[4].weights[12]=-0.391485;
+	in[4].weights[13]=0.120367;
+	in[4].weights[14]=-0.345323;
+	in[4].weights[15]=-0.296105;
+	in[4].weights[16]=0.227781;
+	in[4].weights[17]=0.313528;
+	in[4].weights[18]=-0.015210;
+	in[4].weights[19]=-0.052863;
+	in[4].weights[20]=-0.118712;
+	in[4].weights[21]=-0.023125;
+	in[4].weights[22]=-0.053073;
+	in[4].weights[23]=-0.495426;
+	in[4].weights[24]=0.174972;
+	in[4].weights[25]=-0.125406;
+	in[4].weights[26]=0.565506;
+	in[4].weights[27]=0.283758;
+	in[4].weights[28]=0.053589;
+	in[4].weights[29]=0.421452;
+	in[5].weights[0]=-0.367952;
+	in[5].weights[1]=0.200124;
+	in[5].weights[2]=0.342423;
+	in[5].weights[3]=0.048766;
+	in[5].weights[4]=-0.341378;
+	in[5].weights[5]=-0.353880;
+	in[5].weights[6]=0.095298;
+	in[5].weights[7]=-0.601944;
+	in[5].weights[8]=0.143400;
+	in[5].weights[9]=0.330911;
+	in[5].weights[10]=0.442978;
+	in[5].weights[11]=-0.315265;
+	in[5].weights[12]=-0.035283;
+	in[5].weights[13]=-0.146576;
+	in[5].weights[14]=-0.038851;
+	in[5].weights[15]=0.446205;
+	in[5].weights[16]=-0.606152;
+	in[5].weights[17]=-0.083125;
+	in[5].weights[18]=-0.239952;
+	in[5].weights[19]=0.367239;
+	in[5].weights[20]=0.023091;
+	in[5].weights[21]=0.186400;
+	in[5].weights[22]=-0.304797;
+	in[5].weights[23]=-0.235413;
+	in[5].weights[24]=-0.083181;
+	in[5].weights[25]=-0.131967;
+	in[5].weights[26]=-0.317685;
+	in[5].weights[27]=0.025353;
+	in[5].weights[28]=0.469743;
+	in[5].weights[29]=0.278506;
+	in[6].weights[0]=-0.363788;
+	in[6].weights[1]=-0.200548;
+	in[6].weights[2]=0.938652;
+	in[6].weights[3]=0.799529;
+	in[6].weights[4]=0.007861;
+	in[6].weights[5]=0.742456;
+	in[6].weights[6]=0.281356;
+	in[6].weights[7]=0.514911;
+	in[6].weights[8]=-0.591011;
+	in[6].weights[9]=-0.586168;
+	in[6].weights[10]=-0.788896;
+	in[6].weights[11]=0.229834;
+	in[6].weights[12]=-1.085829;
+	in[6].weights[13]=0.091660;
+	in[6].weights[14]=-1.006862;
+	in[6].weights[15]=-0.164335;
+	in[6].weights[16]=0.249604;
+	in[6].weights[17]=1.094530;
+	in[6].weights[18]=0.146165;
+	in[6].weights[19]=-1.573275;
+	in[6].weights[20]=0.008178;
+	in[6].weights[21]=-0.419955;
+	in[6].weights[22]=-0.851854;
+	in[6].weights[23]=-0.131268;
+	in[6].weights[24]=0.071710;
+	in[6].weights[25]=0.779246;
+	in[6].weights[26]=1.129456;
+	in[6].weights[27]=0.010866;
+	in[6].weights[28]=-0.781081;
+	in[6].weights[29]=-0.234829;
+	in[7].weights[0]=-0.394077;
+	in[7].weights[1]=0.141331;
+	in[7].weights[2]=0.034788;
+	in[7].weights[3]=0.207800;
+	in[7].weights[4]=0.103488;
+	in[7].weights[5]=0.455823;
+	in[7].weights[6]=0.842488;
+	in[7].weights[7]=0.295348;
+	in[7].weights[8]=-0.606170;
+	in[7].weights[9]=-0.305199;
+	in[7].weights[10]=-0.608814;
+	in[7].weights[11]=-0.131505;
+	in[7].weights[12]=-0.026769;
+	in[7].weights[13]=-0.138992;
+	in[7].weights[14]=-0.720686;
+	in[7].weights[15]=-0.486258;
+	in[7].weights[16]=0.093595;
+	in[7].weights[17]=0.715174;
+	in[7].weights[18]=0.050224;
+	in[7].weights[19]=-0.831878;
+	in[7].weights[20]=0.520965;
+	in[7].weights[21]=-0.182653;
+	in[7].weights[22]=-0.568930;
+	in[7].weights[23]=-0.565566;
+	in[7].weights[24]=-0.163067;
+	in[7].weights[25]=-0.277141;
+	in[7].weights[26]=0.785304;
+	in[7].weights[27]=0.315442;
+	in[7].weights[28]=-0.578539;
+	in[7].weights[29]=-0.282510;
+	in[8].weights[0]=-1.032842;
+	in[8].weights[1]=0.270710;
+	in[8].weights[2]=0.430772;
+	in[8].weights[3]=0.901960;
+	in[8].weights[4]=-0.678803;
+	in[8].weights[5]=0.705578;
+	in[8].weights[6]=0.938297;
+	in[8].weights[7]=0.578332;
+	in[8].weights[8]=-0.413482;
+	in[8].weights[9]=-0.266991;
+	in[8].weights[10]=-0.284738;
+	in[8].weights[11]=0.565564;
+	in[8].weights[12]=-1.030864;
+	in[8].weights[13]=0.388503;
+	in[8].weights[14]=-1.144371;
+	in[8].weights[15]=-0.771287;
+	in[8].weights[16]=0.805790;
+	in[8].weights[17]=1.037907;
+	in[8].weights[18]=-0.526516;
+	in[8].weights[19]=-1.309937;
+	in[8].weights[20]=-0.062404;
+	in[8].weights[21]=-0.065925;
+	in[8].weights[22]=-0.198945;
+	in[8].weights[23]=-0.493315;
+	in[8].weights[24]=-0.395651;
+	in[8].weights[25]=-0.067255;
+	in[8].weights[26]=0.398037;
+	in[8].weights[27]=-0.001868;
+	in[8].weights[28]=-0.944669;
+	in[8].weights[29]=-0.327186;
+	in[9].weights[0]=-0.483097;
+	in[9].weights[1]=0.296225;
+	in[9].weights[2]=0.367978;
+	in[9].weights[3]=0.427484;
+	in[9].weights[4]=-0.046008;
+	in[9].weights[5]=0.239648;
+	in[9].weights[6]=-0.008413;
+	in[9].weights[7]=0.602560;
+	in[9].weights[8]=-0.399114;
+	in[9].weights[9]=-0.115975;
+	in[9].weights[10]=-0.536590;
+	in[9].weights[11]=-0.071771;
+	in[9].weights[12]=0.207155;
+	in[9].weights[13]=-0.416833;
+	in[9].weights[14]=-0.576562;
+	in[9].weights[15]=-0.429730;
+	in[9].weights[16]=0.668933;
+	in[9].weights[17]=0.214848;
+	in[9].weights[18]=0.445998;
+	in[9].weights[19]=-0.406410;
+	in[9].weights[20]=0.110683;
+	in[9].weights[21]=-0.325261;
+	in[9].weights[22]=-0.113297;
+	in[9].weights[23]=0.125131;
+	in[9].weights[24]=-0.324884;
+	in[9].weights[25]=0.086674;
+	in[9].weights[26]=0.071008;
+	in[9].weights[27]=-0.472481;
+	in[9].weights[28]=-0.563489;
+	in[9].weights[29]=-0.380148;
+	in[10].weights[0]=0.505146;
+	in[10].weights[1]=0.414382;
+	in[10].weights[2]=-0.491624;
+	in[10].weights[3]=0.053054;
+	in[10].weights[4]=-0.440889;
+	in[10].weights[5]=0.243467;
+	in[10].weights[6]=-0.486385;
+	in[10].weights[7]=-0.128016;
+	in[10].weights[8]=-0.155756;
+	in[10].weights[9]=-0.349709;
+	in[10].weights[10]=0.209246;
+	in[10].weights[11]=-0.484380;
+	in[10].weights[12]=0.175670;
+	in[10].weights[13]=0.321943;
+	in[10].weights[14]=0.574218;
+	in[10].weights[15]=0.371705;
+	in[10].weights[16]=0.236886;
+	in[10].weights[17]=0.275831;
+	in[10].weights[18]=-0.233939;
+	in[10].weights[19]=0.590428;
+	in[10].weights[20]=-0.484281;
+	in[10].weights[21]=-0.436022;
+	in[10].weights[22]=0.173500;
+	in[10].weights[23]=-0.313162;
+	in[10].weights[24]=-0.487379;
+	in[10].weights[25]=-0.058388;
+	in[10].weights[26]=-0.280915;
+	in[10].weights[27]=-0.121212;
+	in[10].weights[28]=0.004141;
+	in[10].weights[29]=0.203114;
+	in[11].weights[0]=0.076863;
+	in[11].weights[1]=-0.178005;
+	in[11].weights[2]=-0.152193;
+	in[11].weights[3]=-0.546050;
+	in[11].weights[4]=0.417873;
+	in[11].weights[5]=-0.445080;
+	in[11].weights[6]=-0.367776;
+	in[11].weights[7]=-0.422614;
+	in[11].weights[8]=0.122107;
+	in[11].weights[9]=-0.308299;
+	in[11].weights[10]=-0.145915;
+	in[11].weights[11]=-0.058954;
+	in[11].weights[12]=0.575712;
+	in[11].weights[13]=-0.067644;
+	in[11].weights[14]=-0.260556;
+	in[11].weights[15]=0.016465;
+	in[11].weights[16]=-0.213284;
+	in[11].weights[17]=-0.046233;
+	in[11].weights[18]=-0.439033;
+	in[11].weights[19]=0.525481;
+	in[11].weights[20]=0.260384;
+	in[11].weights[21]=-0.394250;
+	in[11].weights[22]=0.527747;
+	in[11].weights[23]=0.035008;
+	in[11].weights[24]=0.060209;
+	in[11].weights[25]=0.394088;
+	in[11].weights[26]=-0.105717;
+	in[11].weights[27]=-0.366471;
+	in[11].weights[28]=0.128838;
+	in[11].weights[29]=0.122014;
+	in[12].weights[0]=-0.156747;
+	in[12].weights[1]=0.419842;
+	in[12].weights[2]=0.116998;
+	in[12].weights[3]=0.159139;
+	in[12].weights[4]=-0.217625;
+	in[12].weights[5]=-0.201302;
+	in[12].weights[6]=-0.311185;
+	in[12].weights[7]=0.338552;
+	in[12].weights[8]=0.329941;
+	in[12].weights[9]=-0.012920;
+	in[12].weights[10]=-0.102245;
+	in[12].weights[11]=-0.264846;
+	in[12].weights[12]=-0.051219;
+	in[12].weights[13]=-0.229918;
+	in[12].weights[14]=-0.026521;
+	in[12].weights[15]=-0.376698;
+	in[12].weights[16]=0.176786;
+	in[12].weights[17]=0.275219;
+	in[12].weights[18]=0.256231;
+	in[12].weights[19]=-0.252915;
+	in[12].weights[20]=0.355370;
+	in[12].weights[21]=-0.250472;
+	in[12].weights[22]=-0.097027;
+	in[12].weights[23]=-0.067708;
+	in[12].weights[24]=-0.199532;
+	in[12].weights[25]=0.122850;
+	in[12].weights[26]=0.048089;
+	in[12].weights[27]=0.267603;
+	in[12].weights[28]=0.288453;
+	in[12].weights[29]=0.405761;
+	in[13].weights[0]=0.293487;
+	in[13].weights[1]=0.366524;
+	in[13].weights[2]=-0.110790;
+	in[13].weights[3]=-0.048158;
+	in[13].weights[4]=-0.157557;
+	in[13].weights[5]=0.241042;
+	in[13].weights[6]=0.099537;
+	in[13].weights[7]=0.207303;
+	in[13].weights[8]=-0.311405;
+	in[13].weights[9]=0.325121;
+	in[13].weights[10]=-0.216152;
+	in[13].weights[11]=0.303288;
+	in[13].weights[12]=-0.023167;
+	in[13].weights[13]=-0.066306;
+	in[13].weights[14]=0.261636;
+	in[13].weights[15]=-0.330657;
+	in[13].weights[16]=0.103113;
+	in[13].weights[17]=-0.385256;
+	in[13].weights[18]=0.300212;
+	in[13].weights[19]=0.106565;
+	in[13].weights[20]=0.454331;
+	in[13].weights[21]=-0.419717;
+	in[13].weights[22]=-0.255784;
+	in[13].weights[23]=-0.204291;
+	in[13].weights[24]=0.281790;
+	in[13].weights[25]=-0.399583;
+	in[13].weights[26]=-0.085998;
+	in[13].weights[27]=-0.068869;
+	in[13].weights[28]=-0.127823;
+	in[13].weights[29]=-0.166447;
+	in[14].weights[0]=-0.200440;
+	in[14].weights[1]=0.330647;
+	in[14].weights[2]=0.214185;
+	in[14].weights[3]=-0.012956;
+	in[14].weights[4]=0.373058;
+	in[14].weights[5]=0.101574;
+	in[14].weights[6]=0.058504;
+	in[14].weights[7]=-0.434412;
+	in[14].weights[8]=-0.104703;
+	in[14].weights[9]=0.123552;
+	in[14].weights[10]=-0.219993;
+	in[14].weights[11]=-0.403259;
+	in[14].weights[12]=-0.123677;
+	in[14].weights[13]=0.195531;
+	in[14].weights[14]=-0.148187;
+	in[14].weights[15]=-0.201370;
+	in[14].weights[16]=-0.048147;
+	in[14].weights[17]=0.088435;
+	in[14].weights[18]=0.272929;
+	in[14].weights[19]=0.062583;
+	in[14].weights[20]=0.327721;
+	in[14].weights[21]=0.343651;
+	in[14].weights[22]=0.408943;
+	in[14].weights[23]=-0.141292;
+	in[14].weights[24]=-0.193153;
+	in[14].weights[25]=0.106086;
+	in[14].weights[26]=-0.201124;
+	in[14].weights[27]=0.316007;
+	in[14].weights[28]=-0.189099;
+	in[14].weights[29]=-0.323014;
+	hn[0].weights[0]=1.239107;
+	hn[1].weights[0]=0.088112;
+	hn[2].weights[0]=-1.099220;
+	hn[3].weights[0]=-1.189886;
+	hn[4].weights[0]=0.383850;
+	hn[5].weights[0]=-1.301010;
+	hn[6].weights[0]=-1.289747;
+	hn[7].weights[0]=-0.898556;
+	hn[8].weights[0]=0.841663;
+	hn[9].weights[0]=0.628173;
+	hn[10].weights[0]=0.886356;
+	hn[11].weights[0]=-0.519564;
+	hn[12].weights[0]=1.412227;
+	hn[13].weights[0]=-0.191822;
+	hn[14].weights[0]=1.941387;
+	hn[15].weights[0]=0.947538;
+	hn[16].weights[0]=-1.043311;
+	hn[17].weights[0]=-1.684435;
+	hn[18].weights[0]=0.156335;
+	hn[19].weights[0]=2.539948;
+	hn[20].weights[0]=-0.310550;
+	hn[21].weights[0]=0.335641;
+	hn[22].weights[0]=1.054412;
+	hn[23].weights[0]=0.726303;
+	hn[24].weights[0]=0.164308;
+	hn[25].weights[0]=-0.431875;
+	hn[26].weights[0]=-1.427690;
+	hn[27].weights[0]=0.164163;
+	hn[28].weights[0]=1.466539;
+	hn[29].weights[0]=0.727638;
+	hn[0].bias=0.051778;
+	hn[1].bias=0.019616;
+	hn[2].bias=-0.029910;
+	hn[3].bias=-0.065487;
+	hn[4].bias=0.004201;
+	hn[5].bias=-0.269944;
+	hn[6].bias=-0.055023;
+	hn[7].bias=-0.109744;
+	hn[8].bias=0.156608;
+	hn[9].bias=0.061697;
+	hn[10].bias=0.151709;
+	hn[11].bias=-0.044247;
+	hn[12].bias=0.110151;
+	hn[13].bias=-0.007923;
+	hn[14].bias=0.306844;
+	hn[15].bias=-0.015466;
+	hn[16].bias=-0.080659;
+	hn[17].bias=-0.116967;
+	hn[18].bias=-0.008890;
+	hn[19].bias=0.555380;
+	hn[20].bias=-0.047929;
+	hn[21].bias=-0.000106;
+	hn[22].bias=0.086427;
+	hn[23].bias=0.062389;
+	hn[24].bias=-0.004270;
+	hn[25].bias=-0.025090;
+	hn[26].bias=-0.136879;
+	hn[27].bias=0.003560;
+	hn[28].bias=0.148718;
+	hn[29].bias=0.047528;
+	on[0].bias=-0.000155;
 }
 void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
@@ -721,73 +716,11 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 }
 
 
-/*
-//questa implementazione suppone che le etichette siano due e il nodo di uscita sia solo uno, (contrariamente a quanto fatto finora) che risulta tuttavia più semplice
-*/
-/*
-void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label)
-{
-	calculateOutput(in, hn, on, inputFeatures);
-	float delta_out = 0;
-	float delta_hid = 0;
-	float weight_adj_hidden_to_out[nOfHiddenNodes] = {0};
 
-	//per prima cosa vanno sistemati i pesi tra livello hidden e out
-	float out = on[0].value;
-	delta_out = out;
-	//delta_out = delta_out*(label - out); //questa è da dispense
-	delta_out = delta_out*(out- label); //questa è video yt nei preferiti
-	delta_out = delta_out*(1 - out);
-
-	for (int h = 0; h < nOfHiddenNodes; h++)
-	{
-		weight_adj_hidden_to_out[h] = learningRate*delta_out*hn[h].value;
-	}
-	for(int i = 0; i <nOfFeatures; i++)
-	{
-		for(int h = 0; h <nOfHiddenNodes; h++)
-		{
-			float weight_adj = 0;
-			float delta = delta_out;
-			delta = delta*hn[h].value;
-			delta = delta*(1 - hn[h].value);
-			delta = delta*hn[h].weights[0];
-
-			weight_adj = learningRate;
-			weight_adj = weight_adj *delta;
-			weight_adj = weight_adj *in[i].value;
-
-			//aggiornamento pesi
-			in[i].weights[h] = in[i].weights[h] + weight_adj;
-		}
-	}
-	//aggiornamento pesi tra hidden e out
-	for (int h = 0; h < nOfHiddenNodes; h++)
-	{
-		hn[h].weights[0] = hn[h].weights[0] + weight_adj_hidden_to_out[h];
-	}
-}
-*/
-/*
-//siccome le etichette sono salvate come '0' e '1' bisogna portarle in maniera tale che siano '-1' e '1'
-int convertLabel(int label)
-{
-	if (label == 0)
-		return -1;
-	else
-		return 1;
-}
-*/
 void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label)
 {
 	float delta_h[nOfHiddenNodes] = {0};
 	float delta_o[nOfOutputNodes] = {0};
-
-	//giusto per verifica, eliminabili
-	float bias_hid[nOfHiddenNodes] = { 0 };
-	float bias_o[nOfOutputNodes] = {0};
-
-	float weight_adj_hid[nOfHiddenNodes] = { 0 };
 
 	float error=0;
 	calculateOutput(in, hn, on, inputFeatures);
@@ -806,12 +739,9 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 		}
 		delta_h[h] = delta_h[h] * ((hn[h].value)*(1- hn[h].value));
 	}
-	int placeholderrr = 0;
 	//aggiornamento pesi input-hidden layer
 	for (int h = 0; h < nOfHiddenNodes; h++)
 	{
-		//giusto per verifica
-		bias_hid[h] = learningRate*delta_h[h];
 		hn[h].bias = hn[h].bias + learningRate*delta_h[h];
 		//soluzione temporanea per tenere la modifica dei pesi, sarebbe da cambiare con una matrice per verificare gli aggiustamenti
 		float temp = 0;
@@ -821,12 +751,9 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 			in[i].weights[h] = in[i].weights[h] + temp;
 			temp = 0;
 		}
-
 	}
-	int placeholderz = 0;
 	for (int o = 0; o < nOfOutputNodes; o++)
 	{
-		bias_o[o] = learningRate*delta_o[o];
 		on[o].bias = learningRate*delta_o[o];
 		//soluzione temporanea per tenere la modifica dei pesi, sarebbe da cambiare con una matrice (vettore se nOutput=1) per verificare gli aggiustamenti
 		float temp = 0;
@@ -839,14 +766,14 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 	}
 	calculateOutput(in, hn, on, inputFeatures);
 	error=(fabs)(label-on[0].value);
-
+	//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
 	if(error>thresholdError)
 {
 	train(in,hn,on,inputFeatures,label);
 }
 
 }
-
+//generazione di valori random tra -0.5 e 0.5 utilizzata per bias e pesi
 float generateRandomWeights()
 {
 	float result = 0;
@@ -855,43 +782,20 @@ float generateRandomWeights()
 	result = result / 1000;
 	return result;
 }
-void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[], float weights[], float biases[])
+//serve a stampare su console la rete, genera quello che è l'argomento della funzione loadNetwork
+void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
-	int index = 0;
-	//salvo i pesi tra nodi input e hidden
-	//weights contiene pesi salvati in questo ordine: tutti i pesi tra nodo 1 e hidden, tutti pesi tra nodo 2 e hid e così via
-	for (int i = 0; i < nOfFeatures; i++)
-	{
-		for (int h = 0; h < nOfHiddenNodes; h++)
-		{
-			weights[index] = in[i].weights[h];
-			index++;
-		}
-	}
-	//salvo pesi tra hidden e out
-	for (int h = 0; h < nOfHiddenNodes; h++)
-	{
-		for (int o = 0; o < nOfOutputNodes; o++)
-		{
-			weights[index] = hn[h].weights[o];
-			index++;
-		}
-	}
-	index = 0;
-	for (int h = 0; h < nOfHiddenNodes; h++)
-	{
-		biases[index] = hn[h].bias;
-		index++;
-	}
-	for (int o = 0; o < nOfOutputNodes; o++)
-	{
-		biases[index] = on[o].bias;
-		index++;
-	}
+	//int index = 0;
 
-	index = 0;
+	float temp=0;
+	char *first ="in[";
+	char *second="].weights[";
+	char *third="]=";
+	char *last=";";
+	char *newline="\n\r";
+	char buffer[100];
 
-	//in[0].weights[0]= 0.050364453;
+	//pesi tra nodi input e hidden
 	for (int i = 0; i < nOfFeatures; i++)
 	{
 		/*
@@ -908,12 +812,27 @@ void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[], float weight
 			//printf("%i", h);
 			//printf("]= ");
 
-			printf("%.9f", weights[index]);
+			//printf("%.9f", weights[index]);
+
 			//printf(";\n");
-			printf("\n");
-			index++;
+
+			//printf("\n");
+
+			HAL_UART_Transmit(&huart2, (uint8_t*) first, strlen(first), 0xFFFF);
+			snprintf(buffer, sizeof buffer, "%i", i);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) second, strlen(second), 0xFFFF);
+			snprintf(buffer, sizeof buffer, "%i", h);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) third, strlen(third), 0xFFFF);
+			temp=in[i].weights[h];
+			snprintf(buffer, sizeof buffer, "%f", temp);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) last, strlen(last), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		}
 	}
+	//pesi tra nodi hidden e output
 	for (int h = 0; h < nOfHiddenNodes; h++)
 	{
 		/*
@@ -929,28 +848,53 @@ void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[], float weight
 			//printf("%i", o);
 			//printf("]= ");
 
-			printf("%.9f", weights[index]);
+			//printf("%.9f", weights[index]);
+
 			//printf(";\n");
-			printf("\n");
-			index++;
+
+			//printf("\n");
+			first="hn[";
+
+			HAL_UART_Transmit(&huart2, (uint8_t*) first, strlen(first), 0xFFFF);
+			snprintf(buffer, sizeof buffer, "%i", h);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) second, strlen(second), 0xFFFF);
+			snprintf(buffer, sizeof buffer, "%i", o);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) third, strlen(third), 0xFFFF);
+			temp=hn[h].weights[o];
+			snprintf(buffer, sizeof buffer, "%f", temp);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) last, strlen(last), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		}
 	}
-	index = 0;
-	//printf("#Bias nodi hidden:\n");
+	//bias nodi hidden
 	for (int h = 0; h < nOfHiddenNodes; h++)
 	{
-
 		//printf("hn[");
 		//printf("%i", h);
 		//printf("].bias");
 		//printf("= ");
 
-		printf("%.9f", biases[index]);
+		//printf("%.9f", biases[index]);
+
 		//printf(";\n");
-		printf("\n");
-		index++;
+
+		//printf("\n");
+		HAL_UART_Transmit(&huart2, (uint8_t*) first, strlen(first), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%i", h);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+		second="].bias=";
+		HAL_UART_Transmit(&huart2, (uint8_t*) second, strlen(second), 0xFFFF);
+		temp=hn[h].bias;
+		snprintf(buffer, sizeof buffer, "%f", temp);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*) last, strlen(last), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 	}
 	//printf("#Bias nodi(o) output:\n");
+	//bias nodi output
 	for (int o = 0; o < nOfOutputNodes; o++)
 	{
 		//printf("on[");
@@ -958,9 +902,19 @@ void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[], float weight
 		//printf("].bias");
 		//printf("= ");
 
-		printf("%.9f", biases[index]);
+		//printf("%.9f", biases[index]);
 		//printf(";\n");
-		printf("\n");
-		index++;
+		//printf("\n");
+		//index++;
+		first="on[";
+		HAL_UART_Transmit(&huart2, (uint8_t*) first, strlen(first), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%i", o);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*) second, strlen(second), 0xFFFF);
+		temp=on[o].bias;
+		snprintf(buffer, sizeof buffer, "%f", temp);
+		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*) last, strlen(last), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 	}
 }

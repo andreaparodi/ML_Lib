@@ -38,10 +38,8 @@
 #define sampleTime 200
 //elementi di un vettore di training/da classificare
 #define vectorLength 50
-
-
-enum WorkMode;
-
+//numero di volte che vengono scelte delle coppie se in modalità training random
+#define randomTrainingModeCycles 500
 /*
  * Random setup = tutti gli elementi della rete sono inizializzati random
  * Load from function = carica i pesi e i bias della rete che sono cablati dentro una funzione, generabile

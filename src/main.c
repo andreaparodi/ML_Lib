@@ -3,12 +3,13 @@
 #include "main.h"
 
 
-int main(void) {
+int main(void)
+{
 	HAL_Init();
 	MX_USART2_UART_Init();
 	I2C1_init();
 	BSP_LED_Init(LED2);
-
+//verifico l'effettiva presenza del sensore sul bus i2c e nel caso, inizializzo
 	if (LSM6DSL_Who_Am_I() == LSM6DSL_WHO_AM_I_VAL)
 	{
 		LSM6DSL_present = ENABLE;
@@ -22,6 +23,7 @@ int main(void) {
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
 		LSM6DSL_present = DISABLE;
 	}
+	//caratteri utilizzati frequentemente nell'output (debug)
 	char buffer[100];
 	char *newline = "\n\r";
 	char *tab = "\t";
@@ -32,14 +34,20 @@ int main(void) {
 //	char *sep="#################";
 //	char *media="media: ";
 
+	//liste contenenti i neuroni divisi per livello
 	InputNode inputNodes[nOfFeatures];
 	HiddenNode hiddenNodes[nOfHiddenNodes];
 	OutputNode outputNodes[nOfOutputNodes];
 
-	int mode = WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM;//WORK_MODE_RANDOM_SETUP
+	//valori che decidono il funzionamento del dispositivo
+	//tipo di funzionamento
+	int mode = WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM
+	//abilitazione del crosstrain
 	int ct = CROSSTRAIN_DISABLED;
-	int tr_mode = TRAINING_MODE_RANDOM;
+	//training che assicura l'utilizzo di ogni elemento del training set o training random
+	int tr_mode = TRAINING_MODE_FULL;
 
+	//generazione di un seed per il generatore di numeri casuali tramite funzione apposita
 	int seed = Rand_value_acc();
 	/*
 	 snprintf(buffer, sizeof buffer, "%i", seed);
@@ -437,6 +445,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 	HAL_UART_Transmit(&huart2, (uint8_t*) end, strlen(end), 0xFFFF);
 */
 
+	//training set
 	float trainingSetFeatures[nOfSamples][nOfFeatures] =
 	{
 			{0.021725,      0.031302,       1.028945,       -1.113525,      -3.755325,      -14.811301,     0.040323,       0.075775,       0.056705,       1.135966,       3.787384,       15.840349,      -1.000000,      0.260084,       -1.000000,      },
@@ -541,10 +550,11 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			{0.073593,      -0.009133,      1.024385,       -0.308175,      0.053550,       -16.725628,     0.139869,       0.121507,       0.116396,       0.406583,       0.136723,       17.750393,      -1.000000,      -1.000000,      -1.000000,      },
 			{-0.030099,     -0.026256,      0.990094,       0.522725,       -7.131950,      -3.076150,      0.264366,       0.146813,       0.124320,       0.612784,       7.107211,       4.068144,       1.000000,       1.000000,       -1.000000,      }
 	};
+	//etichette associate ai vettori di training
 	int trainingLabels[nOfSamples] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 									   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	//training set normalization
+	//normalizzazione del training set
 	float max_values[nOfFeatures] = { 0 };
 
 	for (int i = 0; i < nOfFeatures; i++)
@@ -565,28 +575,36 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			trainingSetFeatures[sample][i] = trainingSetFeatures[sample][i]	/ max_values[i];
 		}
 	}
+	//serve per l'eventuale crosstrain
+	int indexNoTrain[sampleToAvoid * 2] = { 0 };
 
+	//selezione della modalità di funzionamento in base alla variabile "mode"
 	switch (mode)
 	{
+	//inizializzazione della rete tramite valori random
 	case WORK_MODE_RANDOM_SETUP:
 		randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
 		break;
+	//caricamento dei valori della rete da valori cablati nella funzione "loadTrainedNetwork"
+	//(sono) valori ricavati da un training, il contenuto della funzione è scritto in console da
+	//"printNetwork"
 	case WORK_MODE_LOAD_NETWORK_FROM_FUNCTION:
 		loadTrainedNetwork(inputNodes, hiddenNodes, outputNodes);
 		break;
+	//caricamento da file (non funzionante al momento)
 	case WORK_MODE_LOAD_NETWORK_FROM_FILE:
 		loadTrainedNetworkFromFile(inputNodes, hiddenNodes, outputNodes);
 		break;
-
+	//addestramento della rete utilizzando il training set cablato nel programma
 	case WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM:
 
-		//randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
+		randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
 
+		//se il crosstrain è abilitato:
 		//suddivido il training set in training e test con percentuali 70 e 30 => 70 vettori di training (35 per ogni classe) e 30 di test (15 per ogni classe)
 		//generazione dei 15+15 indici random
 		if (ct == CROSSTRAIN_ENABLED)
 		{
-			int indexNoTrain[sampleToAvoid * 2] = { 0 };
 			int temp = 0;
 			bool indexAlreadyPresent = false;
 
@@ -613,7 +631,6 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			indexAlreadyPresent = false;
 			for (int irand = 0; irand < sampleToAvoid; irand++)
 			{
-				//indexNoTrain[irand+sampleToAvoid] = (rand() % 50)+50;
 				temp = (rand() % 50) + 50;
 				for (int i = 0; i < irand; i++)
 				{
@@ -632,10 +649,31 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 				else
 					irand--;
 			}
+			//ordinamento degli indici per semplicità in fase di training
+			for (int i = 0; i <sampleToAvoid*2; i++)
+			{
+				for (int j = 0; j < sampleToAvoid*2; j++)
+				{
+					if (indexNoTrain[j] > indexNoTrain[i])
+					{
+						int tmp = indexNoTrain[i];
+						indexNoTrain[i] = indexNoTrain[j];
+						indexNoTrain[j] = tmp;
+					}
+				}
+			}
+
+			//debug verifica degli indici
+			for(int i =0;i<sampleToAvoid*2;i++)
+			{
+				snprintf(buffer, sizeof buffer, "%i", indexNoTrain[i]);
+				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
+				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+			}
 
 			int c1 = 0;
 			int c2 = sampleToAvoid;
-
+			//training che evita gli indici esclusi
 			for (int i = 0; i < nOfSamples / 2; i++)
 			{
 				bool train_index = true;
@@ -660,13 +698,30 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 				}
 				train_index = true;
 			}
+			//verifico l'etichetta dei 15+15 vettori esclusi (test set)
+			int ct_labels[sampleToAvoid*2]={0};
+			int tmp_ind;
+			for (int i = 0;i<sampleToAvoid*2;i++)
+			{
+				tmp_ind=indexNoTrain[i];
+				ct_labels[i]=calculateOutput(inputNodes,hiddenNodes,outputNodes,trainingSetFeatures[tmp_ind]);
+			}
+			//stampa i valori
+			for (int i = 0;i<sampleToAvoid*2;i++)
+			{
+				snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
+				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
+				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+			}
 		}
 		//no crosstrain
 		else
 		{
+			//se training mode random scelgo casualmente "randomTrainingModeCycles" volte
+			//coppie di vettori (una per classe) e addestro la rete su di esse
 			if (tr_mode == TRAINING_MODE_RANDOM)
 			{
-				for (int cycles = 0; cycles < 500; cycles++)
+				for (int cycles = 0; cycles < randomTrainingModeCycles; cycles++)
 				{
 					int index = rand() % 50;
 					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[index], trainingLabels[index]);
@@ -674,6 +729,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[index], trainingLabels[index]);
 				}
 			}
+			//se invece voglio avere certezza di utilizzare tutti i vettori li considero uno alla volta (ognuno una volta solo)
 			else if (tr_mode == TRAINING_MODE_FULL)
 			{
 				for (int i = 0; i < nOfSamples / 2; i++)
@@ -684,13 +740,13 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			}
 		}
 		break;
-
 	}//fine switch
-
+	//contennitori temporanei per accogliere i dati sensoriali
 	float acc[3] = { 0 };
 	float gyro[3] = { 0 };
 	int cycleNum = 0;
 
+	//contengono i campioni che vengono composti e vengono classificati
 	float sampleToClassify_accelerationX[vectorLength] = { 0 };
 	float sampleToClassify_accelerationY[vectorLength] = { 0 };
 	float sampleToClassify_accelerationZ[vectorLength] = { 0 };
@@ -699,9 +755,10 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 	float sampleToClassify_gyroY[vectorLength] = { 0 };
 	float sampleToClassify_gyroZ[vectorLength] = { 0 };
 
+	//contenitore per le features del vettore che viene classificato
 	float sampleFeatures[nOfFeatures] = { 0 };
 
-	int cycleNumber=0;
+	//int cycleNumber=0;
 
 	/*
 	//test var
@@ -723,9 +780,14 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 	HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
 	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 */
+	//etichetta del campione classificato
+	int c_label;
+	char *class="";
+	//printNetwork(inputNodes,hiddenNodes,outputNodes);
 
 	for (;;)
 	{
+		//lettura valori
 		LSM6DSL_ReadAcceleration(acc);
 		LSM6DSL_ReadGyro(gyro);
 //stampa valori ad ogni giro
@@ -749,6 +811,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		}
 		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 */
+		//se il vettore da classificare non è ancora pieno aggiungo il valore appena letto
 		if (cycleNum < vectorLength)
 		{
 			sampleToClassify_accelerationX[cycleNum] = acc[0];
@@ -776,9 +839,10 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			 */
 			cycleNum++;
 		}
+		//altrimenti vengono estratte le features
 		else
 		{
-			cycleNumber++;
+			//cycleNumber++;
 			cycleNum = 0;
 /*
 			for(int i = 0; i<vectorLength;i++)
@@ -882,33 +946,34 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			 }
 			 HAL_UART_Transmit(&huart2, (uint8_t*)closeGraffa, strlen(closeGraffa), 0xFFFF);
 			 HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-
+//vengono normalizzate le features estratte
 			 for (int i=0;i<nOfFeatures;i++)
 			 {
 				 sampleFeatures[i]=sampleFeatures[i]/max_values[i];
 			 }
-			 int c_label=calculateOutput(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+			 //si calcola l'output della rete fornendo il vettore come input
+			 c_label = calculateOutput(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
 			 snprintf(buffer, sizeof buffer, "%i", c_label);
 			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+			 //HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 
 			 //snprintf(buffer, sizeof buffer, "%i", cycleNumber);
 			 //HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-
-			//sampleLabel = classificate(trainingLabels, knn_index);
-			//if (sampleLabel == 0)
-			//{
-			//	class="alterato\t\t";
-			//	BSP_LED_On(LED2);
-			//}
-			//else
-			//{
-			//	class="normale\t\t";
-			//	BSP_LED_Off(LED2);
-			//}
+			 //per etichetta 0 il campione è considerato come alterato e viene acceso il LED come
+			 //feedback visivo per l'utente, in caso contrario esso viene spento
+			if (c_label == 0)
+			{
+				class=" alterato\t\t";
+				BSP_LED_On(LED2);
+			}
+			else
+			{
+				class=" normale\t\t";
+				BSP_LED_Off(LED2);
+			}
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
-			//HAL_UART_Transmit(&huart2, (uint8_t*)class, strlen(class), 0xFFFF);
-			//HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*)class, strlen(class), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
 			/*
 			if(cycleNumber==50)
 			{
@@ -922,6 +987,8 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		HAL_Delay(sampleTime);
 	}
 }
+//non potendo utilizzare la data e ora (time(NULL)) come seed per la funzione srand di inizializzazione
+//del generatore di numeri casuali si utilizza un valore preso dal sensore (nel caso accelerazione su asse z)
 int Rand_value_acc()
 {
 	int val = 0;

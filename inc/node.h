@@ -62,6 +62,6 @@ int calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inpu
 double sigmoid(double x);
 float fsigmoid(float x);
 float generateRandomWeights();
-void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[], float weights[], float biases[]);
+void printNetwork(InputNode in[], HiddenNode hn[], OutputNode on[]);
 
 #endif /* NODE_H_ */
