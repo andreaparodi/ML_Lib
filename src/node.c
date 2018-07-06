@@ -4,11 +4,11 @@
  */
 #include "node.h"
 
-//funzione sigmoide utilizzata per il calcolo del valore del nodo
 double sigmoid(double x)
 {
 	return tanh(x);
 }
+//attualmente in uso
 float fsigmoid(float x)
 {
 	float result = 1 / (1 + expf(-x));
@@ -23,25 +23,7 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
 	float hValues[nOfHiddenNodes] = {0};
 	float oValues[nOfOutputNodes] = { 0 };
-	/*
-	for (int h = 0; h < nOfHiddenNodes; h++)//per ogni nodo del primo livello
-	{
-		for (int i = 0; i < nOfFeatures; i++)//per ogni nodo del livello hidden
-		{
-			values[h] = 0;
-			values[h] = values[h] + in[i].value*in[i].weights[h];
-			//temp = in[i].value;
-			//temp = temp + in[i].value*in[i].weights[h];
-			//temp = temp + hn[h].value;
-			//temp = temp + in[i].bias; //nuovo
-			//temp = 0;
 
-			/////values[h] = values[h] + (in[i].value*in[i].weights[h]);
-		}
-		//hn[h].value = temp;
-		//temp = 0;
-	}
-	*/
 	for (int h = 0; h < nOfHiddenNodes; h++)
 	{
 		//bias dello specifico nodo hidden
@@ -67,41 +49,8 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 			on[o].value = fsigmoid(oValues[o]);
 		}
 	}
-
-
-	//va ora applicata la sigmoide ai valori dei nodi hidden
-	/*
-	for (int h = 0; h < nOfHiddenNodes; h++)
-	{
-		hn[h].value = fsigmoid(hn[h].value);
-	}
-	*/
-	//ora si propaga da hidden a output
-	/*
-	for (int h = 0; h < nOfHiddenNodes; h++)//per ogni nodo del livello hidden
-	{
-		for (int o = 0; o < nOfOutputNodes; o++)//per ogni nodo del livello out
-		{
-			/*
-			temp = hn[h].value;
-			temp = temp*hn[h].weights[o];
-			//temp = temp + on[o].value;
-			temp = temp + hn[h].bias;
-			on[o].value = temp;
-			temp = 0;
-
-		}
-	}
-	*/
-	//va ora applicata la sigmoide ai valori dei nodi out
-	/*
-	for (int o = 0; o < nOfOutputNodes; o++)
-	{
-		on[o].value = fsigmoid(on[o].value);
-	}
-	*/
 }
-int calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[])
+float calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[])
 {
 	for (int i = 0; i < nOfFeatures; i++)
 	{
@@ -109,16 +58,16 @@ int calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inpu
 	}
 	feedForward(in, hn, on);
 	float result = on[0].value;
-	if (on[0].value >= 0.5)
-	{
-		return 1;
-	}
-	else
-	{
-		return 0;
-	}
+	return result;
 }
-
+int calculateSampleLabel(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[])
+{
+	float val = calculateOutput(in,hn,on,inputFeatures);
+	if(val>0.5)
+		return 1;
+	else
+		return 0;
+}
 void randomSetupNodes(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
 	for (int i = 0; i < nOfFeatures; i++)
@@ -659,18 +608,19 @@ void loadTrainedNetwork(InputNode in[], HiddenNode hn[], OutputNode on[])
 	hn[29].bias=0.047528;
 	on[0].bias=-0.000155;
 }
+/*
 void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[])
 {
-	FILE* network = NULL;
+	//FILE* network = NULL;
 	float temp = 0.0;
 
-	network = fopen("network.txt", "a"); //"a" serve per crearlo
+	FILE* network = fopen("network.txt", "a"); //"a" serve per crearlo
 
 
 	network = fopen("network.txt", "r");
 	if (network != NULL)
 	{
-		/*
+
 		//scrittura pesi e bias sui nodi
 		for (int i = 0; i < nOfFeatures; i++)
 		{
@@ -702,7 +652,6 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 			fscanf(network, "%f", &temp);
 			on[o].bias = temp;
 		}
-		*/
 	}
 	else
 	{
@@ -711,10 +660,9 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 		//printf("File not found!");
 		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 	}
-
 	fclose(network);
 }
-
+*/
 
 
 void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label)
@@ -723,7 +671,7 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 	float delta_o[nOfOutputNodes] = {0};
 
 	float error=0;
-	calculateOutput(in, hn, on, inputFeatures);
+	calculateSampleLabel(in, hn, on, inputFeatures);
 
 	//calcolo dei delta per il livello di output
 	for (int o = 0; o < nOfOutputNodes; o++)
@@ -764,14 +712,13 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 			temp = 0;
 		}
 	}
-	calculateOutput(in, hn, on, inputFeatures);
+	calculateSampleLabel(in, hn, on, inputFeatures);
 	error=(fabs)(label-on[0].value);
 	//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
 	if(error>thresholdError)
 {
 	train(in,hn,on,inputFeatures,label);
 }
-
 }
 //generazione di valori random tra -0.5 e 0.5 utilizzata per bias e pesi
 float generateRandomWeights()

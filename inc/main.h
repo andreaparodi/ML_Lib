@@ -35,7 +35,7 @@
 //numero dei vettori di training da non considerare per ogni classe
 #define sampleToAvoid 15
 //tempo tra due letture
-#define sampleTime 200
+#define sampleTime 100
 //elementi di un vettore di training/da classificare
 #define vectorLength 50
 //numero di volte che vengono scelte delle coppie se in modalità training random
@@ -66,6 +66,9 @@
  * */
 #define TRAINING_MODE_RANDOM	0
 #define TRAINING_MODE_FULL		1
+
+#define NOT_SHOW_SENS_DATA 	0
+#define SHOW_SENS_DATA 		1
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef UARTHandle1;

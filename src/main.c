@@ -41,409 +41,17 @@ int main(void)
 
 	//valori che decidono il funzionamento del dispositivo
 	//tipo di funzionamento
-	int mode = WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM
+	int mode = WORK_MODE_LOAD_NETWORK_FROM_FUNCTION;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM WORK_MODE_LOAD_NETWORK_FROM_FUNCTION
 	//abilitazione del crosstrain
 	int ct = CROSSTRAIN_DISABLED;
 	//training che assicura l'utilizzo di ogni elemento del training set o training random
 	int tr_mode = TRAINING_MODE_FULL;
+	//mostrare i dati letti dal sensore ad ogni ciclo
+	int show_sens_data = NOT_SHOW_SENS_DATA;
 
 	//generazione di un seed per il generatore di numeri casuali tramite funzione apposita
 	int seed = Rand_value_acc();
-	/*
-	 snprintf(buffer, sizeof buffer, "%i", seed);
-	 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-	 HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-	 */
 	srand(seed);
-
-	//test scritto per la conferma del calcolo della deviazione standard che non quadrava
-/*
-float sampleFeatures2[nOfFeatures]	={0};
-float accXtesttt[50]=
-{
-		0.3746010,
-		0.3188470,
-		1.1464340,
-		0.4027830,
-		0.7560950,
-		0.3387330,
-		0.5002000,
-		0.7738460,
-		0.2713280,
-		0.3447110,
-		0.2628490,
-		0.4709200,
-		0.8659560,
-		0.8091040,
-		1.0019250,
-		0.6648390,
-		-0.0322690,
-		0.0684420,
-		-0.0353190,
-		0.8383230,
-		0.9150000,
-		0.4931850,
-		0.2383270,
-		0.5385080,
-		0.6794790,
-		0.7685390,
-		0.9875290,
-		0.9654470,
-		0.2854190,
-		0.1174250,
-		0.2268590,
-		0.6620330,
-		0.7934880,
-		0.8630280,
-		0.3331820,
-		0.0981490,
-		0.3836290,
-		0.7354160,
-		0.7840940,
-		0.5892600,
-		0.4376140,
-		0.3536170,
-		0.4647590,
-		0.6771000,
-		0.7927560,
-		0.4656740,
-		0.3506890,
-		0.3431860,
-		0.5813910,
-		0.7626220
-};
-	float accYtesttt[50]={
-			0.1465220,
-			0.2275910,
-			-0.3882650,
-			0.3644750,
-			-0.6914960,
-			0.7224230,
-			0.2562610,
-			-1.6283340,
-			0.5604070,
-			-0.3441620,
-			-0.6375720,
-			-0.4273050,
-			0.1230980,
-			-0.1376770,
-			-0.0481900,
-			-0.0132370,
-			0.5496710,
-			0.0178730,
-			0.3431860,
-			-0.0861320,
-			-0.2816980,
-			0.4721400,
-			0.7630490,
-			-0.0845460,
-			-0.5422900,
-			-0.0317810,
-			-0.2208810,
-			-0.6259210,
-			0.5211230,
-			0.2765740,
-			0.0372100,
-			0.1429230,
-			-0.5942620,
-			-0.5397280,
-			0.3946700,
-			0.3206160,
-			0.1492060,
-			0.0606950,
-			-0.4819610,
-			-0.7166280,
-			-0.8550980,
-			-0.7381000,
-			-0.9280540,
-			-0.4178500,
-			0.0391010,
-			0.6702070,
-			0.2859070,
-			0.1486570,
-			0.0382470,
-			-0.1842200,
-	};
-	float accZtesttt[50]={
-			0.9579440,
-			0.8566840,
-			0.0054290,
-			0.8960290,
-			-0.0548390,
-			0.4249260,
-			0.7299260,
-			-1.4634510,
-			0.3930230,
-			0.7872660,
-			1.2110330,
-			-0.1057740,
-			0.1113250,
-			-0.4963570,
-			0.3500180,
-			0.9911280,
-			0.9646540,
-			1.0675000,
-			1.0038770,
-			0.4818390,
-			0.0293410,
-			0.6999750,
-			0.9646540,
-			1.0852510,
-			0.6203700,
-			0.0467870,
-			-0.0321470,
-			0.1681770,
-			1.0176020,
-			1.0095500,
-			1.2684340,
-			0.3675860,
-			-0.2254560,
-			0.0564250,
-			0.3580090,
-			1.1371010,
-			0.9379970,
-			-0.0106750,
-			-0.0652090,
-			-0.4273660,
-			-0.4043080,
-			-0.4981870,
-			-0.7413330,
-			-0.2656550,
-			0.3122590,
-			0.3941210,
-			0.7355380,
-			1.0689030,
-			0.6267140,
-			0.6248230
-	};
-	float gyrXtesttt[50]={
-			11.7337500,
-			80.8412480,
-			-62.3787500,
-			80.5700000,
-			-49.1225010,
-			-106.662498,
-			39.2700000,
-			24.7887500,
-			-77.0700000,
-			-271.0224910,
-			-57.3912510,
-			135.3187560,
-			120.4524990,
-			150.8062440,
-			52.4737510,
-			-94.2637480,
-			-117.739998,
-			26.4074990,
-			61.5999980,
-			59.1150020,
-			84.7962490,
-			120.6537480,
-			-62.9124980,
-			-150.3337550,
-			41.3612520,
-			141.5225070,
-			112.1224980,
-			215.1012570,
-			-74.9175030,
-			-116.2262500,
-			-82.6262510,
-			90.0899960,
-			126.4550020,
-			215.8012540,
-			-56.2362520,
-			-134.4262540,
-			60.9000020,
-			125.1337510,
-			59.1850010,
-			37.7300000,
-			11.9962500,
-			-12.7137500,
-			0.7962500,
-			50.9949990,
-			-9.8175000,
-			12.5212500,
-			-121.0999980,
-			-70.9187470,
-			-35.8662490,
-			0.8137500
-};
-	float gyrYtesttt[50]=
-	{
-			-5.8887500,
-			71.3037490,
-			1.3562500,
-			7.2362500,
-			-192.8674930,
-			144.9174960,
-			-138.1537480,
-			-73.4562530,
-			216.9212490,
-			-9.8350000,
-			-76.1250000,
-			-224.9624940,
-			-67.7862470,
-			-15.5050000,
-			229.7924960,
-			11.1562500,
-			-78.3649980,
-			56.6650010,
-			-121.1437530,
-			-102.2087480,
-			3.3425000,
-			133.3587490,
-			140.1224980,
-			-128.3537450,
-			-173.7924960,
-			-40.6175000,
-			24.3862500,
-			56.2712520,
-			25.4800000,
-			-26.3287510,
-			-155.5662540,
-			-143.5262450,
-			-97.9124980,
-			37.9225010,
-			17.3425010,
-			-74.5062480,
-			-176.4262540,
-			-103.2500000,
-			-37.2137490,
-			-27.6937500,
-			-22.8550000,
-			1.3650000,
-			17.9637510,
-			79.6074980,
-			70.2712480,
-			121.7037510,
-			0.0525000,
-			-16.6162490,
-			-68.1712490,
-			-70.0087510,
-};
-	float gyrZtesttt[50]=
-	{
-			-2.4762500,
-			-12.0312500,
-			-75.4862520,
-			141.0675050,
-			42.4987490,
-			-75.3375020,
-			181.9562530,
-			-65.1175000,
-			-180.9674990,
-			-41.4137500,
-			-44.7300000,
-			-67.2962490,
-			-29.0849990,
-			62.8424990,
-			-101.7712480,
-			-87.7624970,
-			-86.2925030,
-			-44.4324990,
-			37.7912480,
-			68.9762500,
-			39.3487510,
-			-149.0212550,
-			-133.822495,
-			29.9424990,
-			11.9787500,
-			-29.863750,
-			3.7275000,
-			6.1075000,
-			-152.7749940,
-			-117.4950030,
-			-89.0662540,
-			54.5912510,
-			71.2512510,
-			-127.2862470,
-			-209.0200040,
-			-65.8000030,
-			-12.2412500,
-			66.6137470,
-			69.1250000,
-			27.9737490,
-			13.0637500,
-			-9.9050000,
-			-27.5537490,
-			-115.1500020,
-			-140.9974980,
-			-83.0025020,
-			-11.4537500,
-			-39.0425000,
-			-10.9287500,
-			9.3537500,
-};
-char *tipo="std_dev_accX: ";
-	sampleFeatures2[0] = calculateMean(accXtesttt);
-	sampleFeatures2[1] = calculateMean(accYtesttt);
-	sampleFeatures2[2] = calculateMean(accZtesttt);
-	sampleFeatures2[3] = calculateMean(gyrXtesttt);
-	sampleFeatures2[4] = calculateMean(gyrYtesttt);
-	sampleFeatures2[5] = calculateMean(gyrZtesttt);
-
-	sampleFeatures2[6] = sqrt(calculateVar(accXtesttt,sampleFeatures2[0]));
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[6]);
-	HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[7] = sqrt(calculateVar(accYtesttt,sampleFeatures2[1]));
-tipo="std_dev_accY: ";
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[7]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[8] = sqrt(calculateVar(accZtesttt,sampleFeatures2[2]));
-	tipo="std_dev_accZ: ";
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[8]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-
-HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[9] = sqrt(calculateVar(gyrXtesttt,sampleFeatures2[0]));
-	tipo="std_dev_gyrX: ";
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[9]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-
-HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[10] = sqrt(calculateVar(gyrYtesttt,sampleFeatures2[1]));
-	tipo="std_dev_gyrY: ";
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[10]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[11] = sqrt(calculateVar(gyrZtesttt,sampleFeatures2[2]));
-	tipo="std_dev_gyrZ: ";
-	HAL_UART_Transmit(&huart2, (uint8_t*) tipo, strlen(tipo), 0xFFFF);
-	snprintf(buffer, sizeof buffer, "%f", sampleFeatures2[11]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
-HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	sampleFeatures2[12] = calculateCorr(accXtesttt,gyrXtesttt, sampleFeatures2[0],sampleFeatures2[3], sampleFeatures2[6], sampleFeatures2[9]);
-	sampleFeatures2[13] = calculateCorr(accYtesttt,gyrYtesttt, sampleFeatures2[1],sampleFeatures2[4], sampleFeatures2[7], sampleFeatures2[10]);
-	sampleFeatures2[14] = calculateCorr(accZtesttt,gyrZtesttt, sampleFeatures2[2],sampleFeatures2[5], sampleFeatures2[8], sampleFeatures2[11]);
-
-	char *end="FINEEEEEEEEEEEEEEEEEEEEEEEEEEEEE";
-	HAL_UART_Transmit(&huart2, (uint8_t*) end, strlen(end), 0xFFFF);
-*/
 
 	//training set
 	float trainingSetFeatures[nOfSamples][nOfFeatures] =
@@ -592,9 +200,11 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		loadTrainedNetwork(inputNodes, hiddenNodes, outputNodes);
 		break;
 	//caricamento da file (non funzionante al momento)
+	/*
 	case WORK_MODE_LOAD_NETWORK_FROM_FILE:
 		loadTrainedNetworkFromFile(inputNodes, hiddenNodes, outputNodes);
 		break;
+		*/
 	//addestramento della rete utilizzando il training set cablato nel programma
 	case WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM:
 
@@ -704,7 +314,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			for (int i = 0;i<sampleToAvoid*2;i++)
 			{
 				tmp_ind=indexNoTrain[i];
-				ct_labels[i]=calculateOutput(inputNodes,hiddenNodes,outputNodes,trainingSetFeatures[tmp_ind]);
+				ct_labels[i]=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,trainingSetFeatures[tmp_ind]);
 			}
 			//stampa i valori
 			for (int i = 0;i<sampleToAvoid*2;i++)
@@ -741,7 +351,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		}
 		break;
 	}//fine switch
-	//contennitori temporanei per accogliere i dati sensoriali
+	//contenitori temporanei per accogliere i dati sensoriali
 	float acc[3] = { 0 };
 	float gyro[3] = { 0 };
 	int cycleNum = 0;
@@ -782,8 +392,11 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 */
 	//etichetta del campione classificato
 	int c_label;
+	float out_value;
 	char *class="";
+
 	//printNetwork(inputNodes,hiddenNodes,outputNodes);
+int cycleNumber=0;
 
 	for (;;)
 	{
@@ -796,7 +409,8 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		snprintf(buffer, sizeof buffer, "%i", cycleNum);
 		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer),0xFFFF);
 */
-/*
+		if(show_sens_data == SHOW_SENS_DATA)
+		{
 		for (int i = 0; i < 3; i++)
 		{
 			snprintf(buffer, sizeof buffer, "%f", acc[i]);
@@ -810,7 +424,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) tab, strlen(tab), 0xFFFF);
 		}
 		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
+		}
 		//se il vettore da classificare non è ancora pieno aggiungo il valore appena letto
 		if (cycleNum < vectorLength)
 		{
@@ -842,7 +456,7 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		//altrimenti vengono estratte le features
 		else
 		{
-			//cycleNumber++;
+			cycleNumber++;
 			cycleNum = 0;
 /*
 			for(int i = 0; i<vectorLength;i++)
@@ -853,84 +467,17 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			}
 */
 			sampleFeatures[0] = calculateMean(sampleToClassify_accelerationX);
-			/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[0]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
 			sampleFeatures[1] = calculateMean(sampleToClassify_accelerationY);
-			/*
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[1]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
 			sampleFeatures[2] = calculateMean(sampleToClassify_accelerationZ);
-			/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[2]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
 			sampleFeatures[3] = calculateMean(sampleToClassify_gyroX);
-			/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[3]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
 			sampleFeatures[4] = calculateMean(sampleToClassify_gyroY);
-
-			/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[4]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
 			sampleFeatures[5] = calculateMean(sampleToClassify_gyroZ);
-/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) media, strlen(media), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%f", sampleFeatures[5]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[6] = sqrt(calculateVar(sampleToClassify_accelerationX,sampleFeatures[0]));
-/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[7] = sqrt(calculateVar(sampleToClassify_accelerationY,sampleFeatures[1]));
-/*
- 	 	 	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[8] = sqrt(calculateVar(sampleToClassify_accelerationZ,sampleFeatures[2]));
-/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[9] = sqrt(calculateVar(sampleToClassify_accelerationX,sampleFeatures[3]));
-/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[10] = sqrt(calculateVar(sampleToClassify_accelerationY,sampleFeatures[4]));
-	/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[11] = sqrt(calculateVar(sampleToClassify_accelerationZ,sampleFeatures[5]));
-	/*
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) sep, strlen(sep), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 			sampleFeatures[12] = calculateCorr(sampleToClassify_accelerationX,sampleToClassify_gyroX, sampleFeatures[0],sampleFeatures[3], sampleFeatures[6], sampleFeatures[9]);
 			sampleFeatures[13] = calculateCorr(sampleToClassify_accelerationY,sampleToClassify_gyroY, sampleFeatures[1],sampleFeatures[4], sampleFeatures[7], sampleFeatures[10]);
 			sampleFeatures[14] = calculateCorr(sampleToClassify_accelerationZ,sampleToClassify_gyroZ, sampleFeatures[2],sampleFeatures[5], sampleFeatures[8], sampleFeatures[11]);
@@ -952,16 +499,21 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 				 sampleFeatures[i]=sampleFeatures[i]/max_values[i];
 			 }
 			 //si calcola l'output della rete fornendo il vettore come input
-			 c_label = calculateOutput(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+			 c_label = calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
 			 snprintf(buffer, sizeof buffer, "%i", c_label);
 			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 //HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+			 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
+
+			 out_value = calculateOutput(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+			 snprintf(buffer, sizeof buffer, "%f", out_value);
+			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 
 			 //snprintf(buffer, sizeof buffer, "%i", cycleNumber);
 			 //HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 			 //per etichetta 0 il campione è considerato come alterato e viene acceso il LED come
 			 //feedback visivo per l'utente, in caso contrario esso viene spento
-			if (c_label == 0)
+			/*
+			 if (c_label == 0)
 			{
 				class=" alterato\t\t";
 				BSP_LED_On(LED2);
@@ -971,17 +523,18 @@ HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 				class=" normale\t\t";
 				BSP_LED_Off(LED2);
 			}
+			*/
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*)class, strlen(class), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
-			/*
-			if(cycleNumber==50)
+
+			if(cycleNumber==20)
 			{
 				char *msg2="fine numero50";
 				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),0xFFFF);
 				HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2),0xFFFF);
 			}
-			*/
+
 		}
 		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_Delay(sampleTime);

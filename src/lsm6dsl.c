@@ -26,7 +26,6 @@ void LSM6DSL_ReadAcceleration(float vect[])
 	uint8_t I2C_RxBufferZ[I2C_RXBUFFERSIZE];
 
 	float X_acc, Y_acc, Z_acc;
-	float acc_sensitivity = 3.224669;
 	float acc_sens_table = 0.061;
 
 	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTX_L_XL, 1, (uint8_t *)&I2C_RxBufferX[0], 1, 10000);
@@ -177,6 +176,5 @@ void LSM6DSL_Config()
 	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL9_XL, 1, (uint8_t *)&I2C_TxBuffer[8], 1, 10000);
 	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL10_C, 1, (uint8_t *)&I2C_TxBuffer[9], 1, 10000);
 	//HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DS0_ORIENT_CFG_G, 1, (uint8_t *)&I2C_TxBuffer[10], 1, 10000);
-
 }
 
