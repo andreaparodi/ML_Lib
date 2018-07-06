@@ -153,14 +153,14 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 
 void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
-	float delta_h[nOfHiddenNodes] = {0};
-	float delta_o[nOfOutputNodes] = {0};
+	//float delta_h[nOfHiddenNodes] = {0};
+	//float delta_o[nOfOutputNodes] = {0};
 
 	float error=0;
 	for(int ind=0;ind<nOfSamples/2;ind++)
 	{
 		rec_train(in,hn,on,inputFeatures[ind],labels[ind]);
-
+/*
 		calculateSampleLabel(in, hn, on, inputFeatures[ind]);
 		error=(fabs)(labels[ind]-on[0].value);
 		//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
@@ -168,8 +168,9 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 		{
 			rec_train(in,hn,on,inputFeatures[ind],labels[ind]);
 		}
+		*/
 		rec_train(in,hn,on,inputFeatures[ind+nOfSamples/2],labels[ind+nOfSamples/2]);
-
+/*
 				calculateSampleLabel(in, hn, on, inputFeatures[ind+nOfSamples/2]);
 				error=(fabs)(labels[ind+nOfSamples/2]-on[0].value);
 				//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
@@ -177,6 +178,7 @@ void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures
 				{
 					rec_train(in,hn,on,inputFeatures[ind+nOfSamples/2],labels[ind+nOfSamples/2]);
 				}
+				*/
 	}
 }
 void rec_train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label)
