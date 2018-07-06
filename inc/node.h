@@ -20,6 +20,9 @@
 //parametro di apprendimento //eta
 #define learningRate 0.175
 
+#define nOfSamples 100
+
+
 //numero totale dei pesi della rete
 #define nOfWeights ((nOfOutputNodes*nOfHiddenNodes)+(nOfHiddenNodes*nOfFeatures))
 //numero totale dei bias della rete
@@ -55,7 +58,10 @@ void randomSetupNodes(InputNode in[], HiddenNode hn[], OutputNode on[]);
 void loadTrainedNetwork(InputNode in[], HiddenNode hn[], OutputNode on[]);
 //void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]);
 
-void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label);
+void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[]);
+void rec_train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label);
+void crosstrain(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[]);
+
 float calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[]);
 int calculateSampleLabel(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[]);
 

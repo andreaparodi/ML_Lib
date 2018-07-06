@@ -184,7 +184,7 @@ int main(void)
 		}
 	}
 	//serve per l'eventuale crosstrain
-	int indexNoTrain[sampleToAvoid * 2] = { 0 };
+//	int indexNoTrain[sampleToAvoid * 2] = { 0 };
 
 	//selezione della modalità di funzionamento in base alla variabile "mode"
 	switch (mode)
@@ -215,6 +215,7 @@ int main(void)
 		//generazione dei 15+15 indici random
 		if (ct == CROSSTRAIN_ENABLED)
 		{
+			/*
 			int temp = 0;
 			bool indexAlreadyPresent = false;
 
@@ -323,13 +324,16 @@ int main(void)
 				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
 				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			}
+			*/
 		}
 		//no crosstrain
 		else
 		{
 			//se training mode random scelgo casualmente "randomTrainingModeCycles" volte
 			//coppie di vettori (una per classe) e addestro la rete su di esse
-			if (tr_mode == TRAINING_MODE_RANDOM)
+
+			/*
+			 if (tr_mode == TRAINING_MODE_RANDOM)
 			{
 				for (int cycles = 0; cycles < randomTrainingModeCycles; cycles++)
 				{
@@ -348,6 +352,8 @@ int main(void)
 					train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures[i + nOfSamples / 2],trainingLabels[i + nOfSamples / 2]);
 				}
 			}
+			*/
+			train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
 		}
 		break;
 	}//fine switch
