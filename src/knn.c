@@ -1,9 +1,11 @@
 #include "knn.h"
 //calcola la distanza tra due vettori calcolando la distanza euclidea tra le features
-float calculateDistance(float feature_vect1[], float feature_vect2[])
+float calculateDistance(float feature_vect1[], float feature_vect2[], int type)
 {
 	float distance = 0.0;
 	float temp = 0.0;
+	if (type==EUCLIDEAN_DISTANCE)
+	{
 	for (int i = 0; i < nOfFeatures; i++)
 	{
 		temp = (feature_vect1[i] - feature_vect2[i]);
@@ -11,29 +13,36 @@ float calculateDistance(float feature_vect1[], float feature_vect2[])
 	}
 	temp = 0.0;
 	distance = sqrt(distance);
+	}
+	else if(type==MANHATTAN_DISTANCE)
+	{
+		for (int i = 0; i < nOfFeatures; i++)
+			{
+				distance = distance +fabs(feature_vect1[i] - feature_vect2[i]);
+			}
+	}
 	return distance;
 }
 
 //calcola tutte le possibili distanze e le ordina
 void findKNN(float trainingFeatures[nOfSamples][nOfFeatures], int index[], float sampleFeatures[])
 {
-	//copio matrice features per non modificarla nel main
 	float distances[nOfSamples] = { 0 };
-
+	int dis_type=EUCLIDEAN_DISTANCE;
 	//calcolo delle distanze
 	for (int i = 0; i < nOfSamples; i++)
 	{
-		distances[i] = calculateDistance(trainingFeatures[i], sampleFeatures);
+		distances[i] = calculateDistance(trainingFeatures[i], sampleFeatures, dis_type);
 	}
-	for (int i = 0; i <nOfSamples; i++)                     //Loop for ascending ordering
+	for (int i = 0; i <nOfSamples; i++)
 	{
-		for (int j = 0; j < nOfSamples; j++)             //Loop for comparing other values
+		for (int j = 0; j < nOfSamples; j++)
 		{
-			if (distances[j] > distances[i])                //Comparing other array elements
+			if (distances[j] > distances[i])
 			{
-				float tmp = distances[i];         //Using temporary variable for storing last value
-				distances[i] = distances[j];            //replacing value
-				distances[j] = tmp;             //storing last value
+				float tmp = distances[i];
+				distances[i] = distances[j];
+				distances[j] = tmp;
 
 				int tmpIndex = index[i];
 				index[i] = index[j];
@@ -46,15 +55,12 @@ void findKNN(float trainingFeatures[nOfSamples][nOfFeatures], int index[], float
 int classificate(int labels[], int indexes[])
 {
 	int score = 0;
-	float temp=  0.0;
 	int threshold = 0;
 	for (int i = 0; i < k; i++)
 	{
-		//labels contiene 1 oppure 0 a seconda che sia una classe o l'altra
 		int tmp = indexes[i];
 		score = score + labels[tmp];
 	}
-	temp = k/2;
 	threshold = floor(k/2);
 	if (score > threshold)
 		return 1;

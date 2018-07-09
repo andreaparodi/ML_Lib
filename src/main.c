@@ -41,9 +41,9 @@ int main(void)
 
 	//valori che decidono il funzionamento del dispositivo
 	//tipo di funzionamento
-	int mode = WORK_MODE_LOAD_NETWORK_FROM_FUNCTION;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM WORK_MODE_LOAD_NETWORK_FROM_FUNCTION
+	int mode = WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM WORK_MODE_LOAD_NETWORK_FROM_FUNCTION
 	//abilitazione del crosstrain
-	int ct = CROSSTRAIN_DISABLED;
+	int ct = CROSSTRAIN_ENABLED;
 	//training che assicura l'utilizzo di ogni elemento del training set o training random
 	int tr_mode = TRAINING_MODE_FULL;
 	//mostrare i dati letti dal sensore ad ogni ciclo
@@ -325,6 +325,7 @@ int main(void)
 				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			}
 			*/
+			crosstrain(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
 		}
 		//no crosstrain
 		else
@@ -518,7 +519,7 @@ int cycleNumber=0;
 			 //HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 			 //per etichetta 0 il campione è considerato come alterato e viene acceso il LED come
 			 //feedback visivo per l'utente, in caso contrario esso viene spento
-			/*
+
 			 if (c_label == 0)
 			{
 				class=" alterato\t\t";
@@ -529,7 +530,7 @@ int cycleNumber=0;
 				class=" normale\t\t";
 				BSP_LED_Off(LED2);
 			}
-			*/
+
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*)class, strlen(class), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);

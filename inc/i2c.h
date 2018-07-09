@@ -16,5 +16,6 @@ I2C_HandleTypeDef I2C1Handle;
 
 void I2C1_init(void);
 void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c);
+void Error_Handler();
 
 #endif /* I2C_H_ */

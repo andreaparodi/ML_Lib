@@ -19,7 +19,7 @@ void I2C1_init(void)
 	if(HAL_I2C_Init(&I2C1Handle) != HAL_OK)
 	{
 		/* Initialization Error */
-		//Error_Handler();
+		Error_Handler();
 	}
 }
 void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
@@ -48,4 +48,8 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
-
+void Error_Handler()
+{
+	char *msg = "Something went wrong!\r\n";
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
+}

@@ -9,11 +9,13 @@ double sigmoid(double x)
 	return tanh(x);
 }
 //attualmente in uso
+
 float fsigmoid(float x)
 {
 	float result = 1 / (1 + expf(-x));
 	return result;
 }
+
 float ftanh(float x)
 {
 	return (float)tanh(x);
@@ -153,10 +155,7 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 
 void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
-	//float delta_h[nOfHiddenNodes] = {0};
-	//float delta_o[nOfOutputNodes] = {0};
 
-	float error=0;
 	for(int ind=0;ind<nOfSamples/2;ind++)
 	{
 		rec_train(in,hn,on,inputFeatures[ind],labels[ind]);

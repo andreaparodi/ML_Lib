@@ -17,38 +17,15 @@ float calculateMean(float vect[])
 	mean = mean / vectorLength;
 	return mean;
 }
+
 float calculateVar(float vect[], float mean)
 {
 	float var = 0.0;
 	int i;
 
-//debug
-	/*
-	char buffer[100];
-	char *newline = "\n\r";
-char *men=" - ";
-*/
 	for (i = 0; i<vectorLength; i++)
 	{
-		/*
-		snprintf(buffer, sizeof buffer, "%f", vect[i]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-		//HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-		HAL_UART_Transmit(&huart2, (uint8_t*) men, strlen(men), 0xFFFF);
-
-		snprintf(buffer, sizeof buffer, "%f", mean);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
 		var = var + pow((vect[i] - mean), 2);
-		//sempre parte della verifica sul calcolo della varianza
-/*
-		snprintf(buffer, sizeof buffer, "%f", var);
-		HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-		HAL_Delay(400);
-		*/
 	}
 	var = var / vectorLength;
 	return var;
@@ -90,11 +67,14 @@ float calculateCorr(float vect1[], float vect2[], float med1, float med2, float 
 			stdDev2=-cutoff_correlation;
 		}
 	}
+
 	corr = corr / (stdDev1*stdDev2);
+
 	if(corr>1)
 		corr=1;
 	else if(corr<-1)
 		corr=-1;
+
 	return corr;
 }
 
