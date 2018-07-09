@@ -32,7 +32,7 @@ float calculateVar(float vect[], float mean)
 }
 
 float calculateCorr(float vect1[], float vect2[], float med1, float med2, float stdDev1, float stdDev2)
-{
+{/*
 	float corr = 0.0;
 	float temp = 0.0;
 	int i;
@@ -76,5 +76,32 @@ float calculateCorr(float vect1[], float vect2[], float med1, float med2, float 
 		corr=-1;
 
 	return corr;
+	*/
+	{
+		float corr = 0.0;
+		float temp = 0.0;
+		float nom = 0;
+		float den1 = 0;
+		float den2 = 0;
+
+		for (int i = 0; i<vectorLength; i++)
+		{
+			temp = (vect1[i] - med1);
+			temp = temp * (vect2[i] - med2);
+			nom = nom + temp;
+
+			temp = (vect1[i] - med1);
+			temp = temp*temp;
+			den1 = den1 + temp;
+
+			temp = (vect2[i] - med2);
+			temp = temp*temp;
+			den2 = den2 + temp;
+		}
+		den1=sqrtf(den1);
+		den2=sqrtf(den2);
+		corr = nom / (den1*den2);
+		return corr;
+	}
 }
 

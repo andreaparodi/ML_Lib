@@ -10,7 +10,7 @@
 #define nOfFeatures 15
 #define alpha_learning 0.175
 
-void train_hyperplane(float tr_set[nOfSamples][nOfSamples],int training_labels[], float w[], float bias);
+void train_hyperplane(float tr_set[nOfSamples][nOfFeatures],int training_labels[], float w[], float bias);
 int predictLabel(float w[], float in_vect[], float b);
 
 #endif /* PC_H_ */

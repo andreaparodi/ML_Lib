@@ -52,7 +52,8 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 		}
 	}
 }
-float calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[])
+float calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[],
+		float inputFeatures[])
 {
 	for (int i = 0; i < nOfFeatures; i++)
 	{
@@ -62,7 +63,8 @@ float calculateOutput(InputNode in[], HiddenNode hn[], OutputNode on[], float in
 	float result = on[0].value;
 	return result;
 }
-int calculateSampleLabel(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[])
+int calculateSampleLabel(InputNode in[], HiddenNode hn[], OutputNode on[],
+		float inputFeatures[])
 {
 	float val = calculateOutput(in,hn,on,inputFeatures);
 	if(val>0.5)
@@ -153,205 +155,191 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 */
 
 
-void train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[])
+void train(InputNode in[], HiddenNode hn[], OutputNode on[],
+		float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
 
 	for(int ind=0;ind<nOfSamples/2;ind++)
 	{
 		rec_train(in,hn,on,inputFeatures[ind],labels[ind]);
-/*
-		calculateSampleLabel(in, hn, on, inputFeatures[ind]);
-		error=(fabs)(labels[ind]-on[0].value);
-		//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
-		if(error>thresholdError)
-		{
-			rec_train(in,hn,on,inputFeatures[ind],labels[ind]);
-		}
-		*/
+
 		rec_train(in,hn,on,inputFeatures[ind+nOfSamples/2],labels[ind+nOfSamples/2]);
-/*
-				calculateSampleLabel(in, hn, on, inputFeatures[ind+nOfSamples/2]);
-				error=(fabs)(labels[ind+nOfSamples/2]-on[0].value);
-				//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
-				if(error>thresholdError)
-				{
-					rec_train(in,hn,on,inputFeatures[ind+nOfSamples/2],labels[ind+nOfSamples/2]);
-				}
-				*/
 	}
 }
-void rec_train(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[], int label)
+void rec_train(InputNode in[], HiddenNode hn[], OutputNode on[],
+		float inputFeatures[], int label)
 {
 	float delta_h[nOfHiddenNodes] = {0};
-		float delta_o[nOfOutputNodes] = {0};
+	float delta_o[nOfOutputNodes] = {0};
 
-		float error=0;
-			calculateSampleLabel(in, hn, on, inputFeatures);
+	float error=0;
+	calculateSampleLabel(in, hn, on, inputFeatures);
 
-			//calcolo dei delta per il livello di output
-			for (int o = 0; o < nOfOutputNodes; o++)
-			{
-				delta_o[o] = (label - on[o].value)*on[o].value*(1.0 - on[o].value);
-			}
-			//calcolo dei delta per il livello hidden
-			for (int h = 0; h < nOfHiddenNodes; h++)
-			{
-				for (int o = 0; o < nOfOutputNodes; o++)
-				{
-					delta_h[h] = delta_h[h] + (delta_o[o]*hn[h].weights[o]);
-				}
-				delta_h[h] = delta_h[h] * ((hn[h].value)*(1- hn[h].value));
-			}
-			//aggiornamento pesi input-hidden layer
-			for (int h = 0; h < nOfHiddenNodes; h++)
-			{
-				hn[h].bias = hn[h].bias + learningRate*delta_h[h];
-				//soluzione temporanea per tenere la modifica dei pesi, sarebbe da cambiare con una matrice per verificare gli aggiustamenti
-				float temp = 0;
-				for (int i = 0; i < nOfFeatures; i++)
-				{
-					temp = learningRate*in[i].value*delta_h[h];
-					in[i].weights[h] = in[i].weights[h] + temp;
-					temp = 0;
-				}
-			}
-			for (int o = 0; o < nOfOutputNodes; o++)
-			{
-				on[o].bias = learningRate*delta_o[o];
-				//soluzione temporanea per tenere la modifica dei pesi, sarebbe da cambiare con una matrice (vettore se nOutput=1) per verificare gli aggiustamenti
-				float temp = 0;
-				for (int h = 0; h < nOfHiddenNodes; h++)
-				{
-					temp = learningRate*hn[h].value*delta_o[o];
-					hn[h].weights[o] = hn[h].weights[o] + temp;
-					temp = 0;
-				}
-			}
-			calculateSampleLabel(in, hn, on, inputFeatures);
-			error=(fabs)(label-on[0].value);
-			//se l'errore è maggiore di un valore scelto viene effettuato ancora il training finchè la condizione non è soddisfatta
-			if(error>thresholdError)
-			{
-				rec_train(in,hn,on,inputFeatures,label);
-			}
+	//calcolo dei delta per il livello di output
+	for (int o = 0; o < nOfOutputNodes; o++)
+	{
+		delta_o[o] = (label - on[o].value)*on[o].value*(1.0 - on[o].value);
 	}
-void crosstrain(InputNode in[], HiddenNode hn[], OutputNode on[], float inputFeatures[nOfSamples][nOfFeatures], int labels[])
+	//calcolo dei delta per il livello hidden
+	for (int h = 0; h < nOfHiddenNodes; h++)
+	{
+		for (int o = 0; o < nOfOutputNodes; o++)
+		{
+			delta_h[h] = delta_h[h] + (delta_o[o]*hn[h].weights[o]);
+		}
+		delta_h[h] = delta_h[h] * ((hn[h].value)*(1- hn[h].value));
+	}
+	//aggiornamento pesi input-hidden layer
+	for (int h = 0; h < nOfHiddenNodes; h++)
+	{
+		hn[h].bias = hn[h].bias + learningRate*delta_h[h];
+		float temp = 0;
+		for (int i = 0; i < nOfFeatures; i++)
+		{
+			temp = learningRate*in[i].value*delta_h[h];
+			in[i].weights[h] = in[i].weights[h] + temp;
+			temp = 0;
+		}
+	}
+	for (int o = 0; o < nOfOutputNodes; o++)
+	{
+		on[o].bias = learningRate*delta_o[o];
+		float temp = 0;
+		for (int h = 0; h < nOfHiddenNodes; h++)
+		{
+			temp = learningRate*hn[h].value*delta_o[o];
+			hn[h].weights[o] = hn[h].weights[o] + temp;
+			temp = 0;
+		}
+	}
+	calculateSampleLabel(in, hn, on, inputFeatures);
+	error=(fabs)(label-on[0].value);
+	//se l'errore è maggiore di un valore scelto viene effettuato ancora il
+	//training finchè la condizione non è soddisfatta
+	if(error>thresholdError)
+	{
+		rec_train(in,hn,on,inputFeatures,label);
+	}
+}
+void crosstrain(InputNode in[], HiddenNode hn[], OutputNode on[],
+		float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
 	//scelta random degli indici
 	int temp = 0;
-	char buffer[100];
-	char *newline = "\n\r";
-	char *tab = "\t";
-
 	int indexNoTrain[sampleToAvoid * 2] = { 0 };
+	bool indexAlreadyPresent = false;
 
-				bool indexAlreadyPresent = false;
-
-				for (int irand = 0; irand < sampleToAvoid; irand++)
-				{
-					temp = rand() % 50;
-					for (int i = 0; i < irand; i++)
-					{
-						if (temp != indexNoTrain[i])
-						{
-							indexAlreadyPresent = false;
-						}
-						else
-						{
-							indexAlreadyPresent = true;
-							break;
-						}
-					}
-					if (!indexAlreadyPresent)
-						indexNoTrain[irand] = temp;
-					else
-						irand--;
-				}
+	for (int irand = 0; irand < sampleToAvoid; irand++)
+	{
+		temp = rand() % 50;
+		for (int i = 0; i < irand; i++)
+		{
+			if (temp != indexNoTrain[i])
+			{
 				indexAlreadyPresent = false;
-				for (int irand = 0; irand < sampleToAvoid; irand++)
-				{
-					temp = (rand() % 50) + 50;
-					for (int i = 0; i < irand; i++)
-					{
-						if (temp != indexNoTrain[i + sampleToAvoid])
-						{
-							indexAlreadyPresent = false;
-						}
-						else
-						{
-							indexAlreadyPresent = true;
-							break;
-						}
-					}
-					if (!indexAlreadyPresent)
-						indexNoTrain[irand + sampleToAvoid] = temp;
-					else
-						irand--;
-				}
-				//ordinamento degli indici per semplicità in fase di training
-				for (int i = 0; i <sampleToAvoid*2; i++)
-				{
-					for (int j = 0; j < sampleToAvoid*2; j++)
-					{
-						if (indexNoTrain[j] > indexNoTrain[i])
-						{
-							int tmp = indexNoTrain[i];
-							indexNoTrain[i] = indexNoTrain[j];
-							indexNoTrain[j] = tmp;
-						}
-					}
-				}
-
-				//debug verifica degli indici
-				for(int i =0;i<sampleToAvoid*2;i++)
-				{
-					snprintf(buffer, sizeof buffer, "%i", indexNoTrain[i]);
-					HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-					HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-				}
-
-				int c1 = 0;
-				int c2 = sampleToAvoid;
-				//training che evita gli indici esclusi
-				for (int i = 0; i < nOfSamples / 2; i++)
-				{
-					bool train_index = true;
-					if (indexNoTrain[c1] == i)
-					{
-						c1++;
-						train_index = false;
-					}
-					if (train_index)
-					{
-						rec_train(in, hn, on, inputFeatures[i], labels[i]);
-					}
-					train_index = true;
-					if (indexNoTrain[c2] == i + nOfSamples / 2)
-					{
-						c2++;
-						train_index = false;
-					}
-					if (train_index)
-					{
-						rec_train(in, hn, on, inputFeatures[i + nOfSamples / 2], labels[i + nOfSamples / 2]);
-					}
-					train_index = true;
-				}
-				//verifico l'etichetta dei 15+15 vettori esclusi (test set)
-				int ct_labels[sampleToAvoid*2]={0};
-				int tmp_ind;
-				for (int i = 0;i<sampleToAvoid*2;i++)
-				{
-					tmp_ind=indexNoTrain[i];
-					ct_labels[i]=calculateSampleLabel(in,hn,on,inputFeatures[tmp_ind]);
-				}
-				//stampa i valori
-				for (int i = 0;i<sampleToAvoid*2;i++)
-				{
-					snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
-					HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-					HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			}
+				else
+			{
+				indexAlreadyPresent = true;
+				break;
+			}
+		}
+		if (!indexAlreadyPresent)
+			indexNoTrain[irand] = temp;
+		else
+			irand--;
+	}
+	indexAlreadyPresent = false;
+
+char buffer[100];
+		char *newline = "\n\r";
+		char *tab = "\t";
+
+
+	for (int irand = 0; irand < sampleToAvoid; irand++)
+	{
+		temp = (rand() % 50) + 50;
+		for (int i = 0; i < irand; i++)
+		{
+			if (temp != indexNoTrain[i + sampleToAvoid])
+			{
+				indexAlreadyPresent = false;
+			}
+			else
+			{
+				indexAlreadyPresent = true;
+				break;
+			}
+		}
+		if (!indexAlreadyPresent)
+			indexNoTrain[irand + sampleToAvoid] = temp;
+		else
+			irand--;
+		}
+		//ordinamento degli indici per semplicità in fase di training
+		for (int i = 0; i <sampleToAvoid*2; i++)
+		{
+			for (int j = 0; j < sampleToAvoid*2; j++)
+			{
+				if (indexNoTrain[j] > indexNoTrain[i])
+				{
+					int tmp = indexNoTrain[i];
+					indexNoTrain[i] = indexNoTrain[j];
+					indexNoTrain[j] = tmp;
+				}
+			}
+		}
+
+		//debug verifica degli indici
+		for(int i =0;i<sampleToAvoid*2;i++)
+		{
+			snprintf(buffer, sizeof buffer, "%i", indexNoTrain[i]);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+		}
+
+		int c1 = 0;
+		int c2 = sampleToAvoid;
+		//training che evita gli indici esclusi
+		for (int i = 0; i < nOfSamples / 2; i++)
+		{
+			bool train_index = true;
+			if (indexNoTrain[c1] == i)
+			{
+				c1++;
+				train_index = false;
+			}
+			if (train_index)
+			{
+				rec_train(in, hn, on, inputFeatures[i], labels[i]);
+			}
+			train_index = true;
+			if (indexNoTrain[c2] == i + nOfSamples / 2)
+			{
+				c2++;
+				train_index = false;
+			}
+			if (train_index)
+			{
+				rec_train(in, hn, on, inputFeatures[i + nOfSamples / 2], labels[i + nOfSamples / 2]);
+			}
+			train_index = true;
+		}
+		//verifico l'etichetta dei 15+15 vettori esclusi
+		int ct_labels[sampleToAvoid*2]={0};
+		int tmp_ind;
+		for (int i = 0;i<sampleToAvoid*2;i++)
+		{
+			tmp_ind=indexNoTrain[i];
+			ct_labels[i]=calculateSampleLabel(in,hn,on,inputFeatures[tmp_ind]);
+		}
+		//stampa i valori
+		for (int i = 0;i<sampleToAvoid*2;i++)
+		{
+			snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+		}
 	}
 //generazione di valori random tra -0.5 e 0.5 utilizzata per bias e pesi
 float generateRandomWeights()

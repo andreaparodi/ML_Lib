@@ -53,6 +53,10 @@ int main(void)
 	int seed = Rand_value_acc();
 	srand(seed);
 
+	//perceptron
+	float bias;
+	float w[nOfFeatures]={0};
+
 	//training set
 	float trainingSetFeatures[nOfSamples][nOfFeatures] =
 	{
@@ -187,6 +191,7 @@ int main(void)
 //	int indexNoTrain[sampleToAvoid * 2] = { 0 };
 
 	//selezione della modalità di funzionamento in base alla variabile "mode"
+	/*
 	switch (mode)
 	{
 	//inizializzazione della rete tramite valori random
@@ -199,12 +204,7 @@ int main(void)
 	case WORK_MODE_LOAD_NETWORK_FROM_FUNCTION:
 		loadTrainedNetwork(inputNodes, hiddenNodes, outputNodes);
 		break;
-	//caricamento da file (non funzionante al momento)
-	/*
-	case WORK_MODE_LOAD_NETWORK_FROM_FILE:
-		loadTrainedNetworkFromFile(inputNodes, hiddenNodes, outputNodes);
-		break;
-		*/
+
 	//addestramento della rete utilizzando il training set cablato nel programma
 	case WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM:
 
@@ -215,149 +215,17 @@ int main(void)
 		//generazione dei 15+15 indici random
 		if (ct == CROSSTRAIN_ENABLED)
 		{
-			/*
-			int temp = 0;
-			bool indexAlreadyPresent = false;
-
-			for (int irand = 0; irand < sampleToAvoid; irand++)
-			{
-				temp = rand() % 50;
-				for (int i = 0; i < irand; i++)
-				{
-					if (temp != indexNoTrain[i])
-					{
-						indexAlreadyPresent = false;
-					}
-					else
-					{
-						indexAlreadyPresent = true;
-						break;
-					}
-				}
-				if (!indexAlreadyPresent)
-					indexNoTrain[irand] = temp;
-				else
-					irand--;
-			}
-			indexAlreadyPresent = false;
-			for (int irand = 0; irand < sampleToAvoid; irand++)
-			{
-				temp = (rand() % 50) + 50;
-				for (int i = 0; i < irand; i++)
-				{
-					if (temp != indexNoTrain[i + sampleToAvoid])
-					{
-						indexAlreadyPresent = false;
-					}
-					else
-					{
-						indexAlreadyPresent = true;
-						break;
-					}
-				}
-				if (!indexAlreadyPresent)
-					indexNoTrain[irand + sampleToAvoid] = temp;
-				else
-					irand--;
-			}
-			//ordinamento degli indici per semplicità in fase di training
-			for (int i = 0; i <sampleToAvoid*2; i++)
-			{
-				for (int j = 0; j < sampleToAvoid*2; j++)
-				{
-					if (indexNoTrain[j] > indexNoTrain[i])
-					{
-						int tmp = indexNoTrain[i];
-						indexNoTrain[i] = indexNoTrain[j];
-						indexNoTrain[j] = tmp;
-					}
-				}
-			}
-
-			//debug verifica degli indici
-			for(int i =0;i<sampleToAvoid*2;i++)
-			{
-				snprintf(buffer, sizeof buffer, "%i", indexNoTrain[i]);
-				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			}
-
-			int c1 = 0;
-			int c2 = sampleToAvoid;
-			//training che evita gli indici esclusi
-			for (int i = 0; i < nOfSamples / 2; i++)
-			{
-				bool train_index = true;
-				if (indexNoTrain[c1] == i)
-				{
-					c1++;
-					train_index = false;
-				}
-				if (train_index)
-				{
-					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[i], trainingLabels[i]);
-				}
-				train_index = true;
-				if (indexNoTrain[c2] == i + nOfSamples / 2)
-				{
-					c2++;
-					train_index = false;
-				}
-				if (train_index)
-				{
-					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[i + nOfSamples / 2], trainingLabels[i + nOfSamples / 2]);
-				}
-				train_index = true;
-			}
-			//verifico l'etichetta dei 15+15 vettori esclusi (test set)
-			int ct_labels[sampleToAvoid*2]={0};
-			int tmp_ind;
-			for (int i = 0;i<sampleToAvoid*2;i++)
-			{
-				tmp_ind=indexNoTrain[i];
-				ct_labels[i]=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,trainingSetFeatures[tmp_ind]);
-			}
-			//stampa i valori
-			for (int i = 0;i<sampleToAvoid*2;i++)
-			{
-				snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
-				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			}
-			*/
 			crosstrain(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
 		}
 		//no crosstrain
 		else
 		{
-			//se training mode random scelgo casualmente "randomTrainingModeCycles" volte
-			//coppie di vettori (una per classe) e addestro la rete su di esse
-
-			/*
-			 if (tr_mode == TRAINING_MODE_RANDOM)
-			{
-				for (int cycles = 0; cycles < randomTrainingModeCycles; cycles++)
-				{
-					int index = rand() % 50;
-					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[index], trainingLabels[index]);
-					index = (rand() % 50) + 50;
-					train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures[index], trainingLabels[index]);
-				}
-			}
-			//se invece voglio avere certezza di utilizzare tutti i vettori li considero uno alla volta (ognuno una volta solo)
-			else if (tr_mode == TRAINING_MODE_FULL)
-			{
-				for (int i = 0; i < nOfSamples / 2; i++)
-				{
-					train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures[i], trainingLabels[i]);
-					train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures[i + nOfSamples / 2],trainingLabels[i + nOfSamples / 2]);
-				}
-			}
-			*/
 			train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
 		}
 		break;
 	}//fine switch
+	*/
+	train_hyperplane(trainingSetFeatures, trainingLabels, w, bias);
 	//contenitori temporanei per accogliere i dati sensoriali
 	float acc[3] = { 0 };
 	float gyro[3] = { 0 };
@@ -506,7 +374,10 @@ int cycleNumber=0;
 				 sampleFeatures[i]=sampleFeatures[i]/max_values[i];
 			 }
 			 //si calcola l'output della rete fornendo il vettore come input
-			 c_label = calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+			 //c_label = calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+			 c_label = predictLabel(w,sampleFeatures,bias);
+
+
 			 snprintf(buffer, sizeof buffer, "%i", c_label);
 			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 			 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
