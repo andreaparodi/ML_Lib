@@ -31,77 +31,29 @@ float calculateVar(float vect[], float mean)
 	return var;
 }
 
-float calculateCorr(float vect1[], float vect2[], float med1, float med2, float stdDev1, float stdDev2)
-{/*
+float calculateCorr(float vect1[], float vect2[], float med1, float med2)
+{
 	float corr = 0.0;
 	float temp = 0.0;
-	int i;
-	for (i = 0; i<vectorLength; i++)
+	float nom = 0;
+	float den1 = 0;
+	float den2 = 0;
+	for (int i = 0; i<vectorLength; i++)
 	{
 		temp = (vect1[i] - med1);
 		temp = temp * (vect2[i] - med2);
-		corr = corr + temp;
-		temp = 0.0;
+		nom = nom + temp;
+		temp = (vect1[i] - med1);
+		temp = temp*temp;
+		den1 = den1 + temp;
+
+		temp = (vect2[i] - med2);
+		temp = temp*temp;
+		den2 = den2 + temp;
 	}
-	corr = corr / vectorLength;
-
-	//serve un controllo su deviazioni standard diverse da zero
-	int tempStdDev1=fabs(stdDev1);
-	int tempStdDev2=fabs(stdDev2);
-	if(tempStdDev1<1 || tempStdDev2<1)
-	{
-		if(stdDev1>0)
-		{
-			stdDev1=cutoff_correlation;
-		}
-		else
-		{
-			stdDev1=-cutoff_correlation;
-		}
-		if(stdDev2>0)
-		{
-			stdDev2=cutoff_correlation;
-		}
-		else
-		{
-			stdDev2=-cutoff_correlation;
-		}
-	}
-
-	corr = corr / (stdDev1*stdDev2);
-
-	if(corr>1)
-		corr=1;
-	else if(corr<-1)
-		corr=-1;
-
+	den1=sqrtf(den1);
+	den2=sqrtf(den2);
+	corr = nom / (den1*den2);
 	return corr;
-	*/
-	{
-		float corr = 0.0;
-		float temp = 0.0;
-		float nom = 0;
-		float den1 = 0;
-		float den2 = 0;
-
-		for (int i = 0; i<vectorLength; i++)
-		{
-			temp = (vect1[i] - med1);
-			temp = temp * (vect2[i] - med2);
-			nom = nom + temp;
-
-			temp = (vect1[i] - med1);
-			temp = temp*temp;
-			den1 = den1 + temp;
-
-			temp = (vect2[i] - med2);
-			temp = temp*temp;
-			den2 = den2 + temp;
-		}
-		den1=sqrtf(den1);
-		den2=sqrtf(den2);
-		corr = nom / (den1*den2);
-		return corr;
-	}
 }
 

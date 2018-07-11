@@ -21,6 +21,8 @@
 #include "usart.h"
 #include "gpio.h"
 #include "node.h"
+#include "pc.h"
+#include "knn.h"
 
 //valore di inizializzazione per i pesi
 #define defaultWeight 1
@@ -40,6 +42,8 @@
 #define vectorLength 50
 //numero di volte che vengono scelte delle coppie se in modalità training random
 #define randomTrainingModeCycles 500
+
+#define testSetSize 50
 /*
  * Random setup = tutti gli elementi della rete sono inizializzati random
  * Load from function = carica i pesi e i bias della rete che sono cablati dentro una funzione, generabile
@@ -54,8 +58,7 @@
 /*
  * Abilita o disabilita il crosstrain della rete (utilizzare una parte di training set come test set)
  * */
-#define CROSSTRAIN_DISABLED	0
-#define CROSSTRAIN_ENABLED	1
+
 /*
  * Training mode random = vengono scelte delle coppie di vettori, uno per ogni classe,e si effettua il training
  * su di esse, si ripete questa procedura n (500) volte (non garantisce quindi che tutti gli elementi del
@@ -69,6 +72,8 @@
 
 #define NOT_SHOW_SENS_DATA 	0
 #define SHOW_SENS_DATA 		1
+
+
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef UARTHandle1;

@@ -28,18 +28,24 @@ void LSM6DSL_ReadAcceleration(float vect[])
 	float X_acc, Y_acc, Z_acc;
 	float acc_sens_table = 0.061;
 
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTX_L_XL, 1, (uint8_t *)&I2C_RxBufferX[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTX_H_XL, 1, (uint8_t *)&I2C_RxBufferX[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTX_L_XL, 1, (uint8_t *)&I2C_RxBufferX[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTX_H_XL, 1, (uint8_t *)&I2C_RxBufferX[1], 1, 10000);
 	int16_t dataX = (((uint16_t)I2C_RxBufferX[1]<<8 | I2C_RxBufferX[0]));
 	X_acc = (float)dataX;
 
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTY_L_XL, 1, (uint8_t *)&I2C_RxBufferY[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTY_H_XL, 1, (uint8_t *)&I2C_RxBufferY[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTY_L_XL, 1, (uint8_t *)&I2C_RxBufferY[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTY_H_XL, 1, (uint8_t *)&I2C_RxBufferY[1], 1, 10000);
 	int16_t dataY = (((uint16_t)I2C_RxBufferY[1]<<8 | I2C_RxBufferY[0]));
 	Y_acc = (float)dataY;
 
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTZ_L_XL, 1, (uint8_t *)&I2C_RxBufferZ[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTZ_H_XL, 1, (uint8_t *)&I2C_RxBufferZ[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTZ_L_XL, 1, (uint8_t *)&I2C_RxBufferZ[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTZ_H_XL, 1, (uint8_t *)&I2C_RxBufferZ[1], 1, 10000);
 	int16_t dataZ = (((uint16_t)I2C_RxBufferZ[1]<<8 | I2C_RxBufferZ[0]));
 	Z_acc = (float)dataZ;
 
@@ -59,18 +65,24 @@ void LSM6DSL_ReadGyro(float vect[])
 
 	float X_gyr, Y_gyr, Z_gyr;
 	float gyro_sensitivity =8.75;
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTX_L_G, 1, (uint8_t *)&I2C_RxBufferX[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTX_H_G, 1, (uint8_t *)&I2C_RxBufferX[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTX_L_G, 1, (uint8_t *)&I2C_RxBufferX[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTX_H_G, 1, (uint8_t *)&I2C_RxBufferX[1], 1, 10000);
 	int16_t dataX = (((uint16_t)I2C_RxBufferX[1]<<8 | I2C_RxBufferX[0]));
 	X_gyr = (float)dataX;
 
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTY_L_G, 1, (uint8_t *)&I2C_RxBufferY[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTY_H_G, 1, (uint8_t *)&I2C_RxBufferY[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTY_L_G, 1, (uint8_t *)&I2C_RxBufferY[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTY_H_G, 1, (uint8_t *)&I2C_RxBufferY[1], 1, 10000);
 	int16_t dataY = (((uint16_t)I2C_RxBufferY[1]<<8 | I2C_RxBufferY[0]));
 	Y_gyr = (float)dataY;
 
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTZ_L_G, 1, (uint8_t *)&I2C_RxBufferZ[0], 1, 10000);
-	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1, LSM6DSL_OUTZ_H_G, 1, (uint8_t *)&I2C_RxBufferZ[1], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTZ_L_G, 1, (uint8_t *)&I2C_RxBufferZ[0], 1, 10000);
+	HAL_I2C_Mem_Read(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR<<1 | 1,
+			LSM6DSL_OUTZ_H_G, 1, (uint8_t *)&I2C_RxBufferZ[1], 1, 10000);
 	int16_t dataZ = (((uint16_t)I2C_RxBufferZ[1]<<8 | I2C_RxBufferZ[0]));
 	Z_gyr = (float)dataZ;
 
@@ -165,16 +177,26 @@ void LSM6DSL_Config()
 	**********************************************************/
 	I2C_TxBuffer[9] = 0x00;
 
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL1_XL, 1, (uint8_t *)&I2C_TxBuffer[0], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL2_G, 1, (uint8_t *)&I2C_TxBuffer[1], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL3_C, 1, (uint8_t *)&I2C_TxBuffer[2], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL4_C, 1, (uint8_t *)&I2C_TxBuffer[3], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL5_C, 1, (uint8_t *)&I2C_TxBuffer[4], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL6_C, 1, (uint8_t *)&I2C_TxBuffer[5], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL7_C, 1, (uint8_t *)&I2C_TxBuffer[6], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL8_XL, 1, (uint8_t *)&I2C_TxBuffer[7], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL9_XL, 1, (uint8_t *)&I2C_TxBuffer[8], 1, 10000);
-	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DSL_CTRL10_C, 1, (uint8_t *)&I2C_TxBuffer[9], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL1_XL, 1, (uint8_t *)&I2C_TxBuffer[0], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL2_G, 1, (uint8_t *)&I2C_TxBuffer[1], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL3_C, 1, (uint8_t *)&I2C_TxBuffer[2], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL4_C, 1, (uint8_t *)&I2C_TxBuffer[3], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL5_C, 1, (uint8_t *)&I2C_TxBuffer[4], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL6_C, 1, (uint8_t *)&I2C_TxBuffer[5], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL7_C, 1, (uint8_t *)&I2C_TxBuffer[6], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL8_XL, 1, (uint8_t *)&I2C_TxBuffer[7], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL9_XL, 1, (uint8_t *)&I2C_TxBuffer[8], 1, 10000);
+	HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE,
+			LSM6DSL_CTRL10_C, 1, (uint8_t *)&I2C_TxBuffer[9], 1, 10000);
 	//HAL_I2C_Mem_Write(&I2C1Handle, (uint16_t)LSM6DSL_SLAVE_ADDR << 1 & 0xFE, LSM6DS0_ORIENT_CFG_G, 1, (uint8_t *)&I2C_TxBuffer[10], 1, 10000);
 }
 

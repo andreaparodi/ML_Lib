@@ -30,6 +30,9 @@
 //errore massimo accettato in fase di training
 #define thresholdError 0.1
 
+#define CROSSTRAIN_DISABLED	0
+#define CROSSTRAIN_ENABLED	1
+
 typedef struct
 {
 	float value;

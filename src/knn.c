@@ -25,10 +25,10 @@ float calculateDistance(float feature_vect1[], float feature_vect2[], int type)
 }
 
 //calcola tutte le possibili distanze e le ordina
-void findKNN(float trainingFeatures[nOfSamples][nOfFeatures], int index[], float sampleFeatures[])
+void findKNN(float trainingFeatures[nOfSamples][nOfFeatures],
+		int index[], float sampleFeatures[], int dis_type)
 {
 	float distances[nOfSamples] = { 0 };
-	int dis_type=EUCLIDEAN_DISTANCE;
 	//calcolo delle distanze
 	for (int i = 0; i < nOfSamples; i++)
 	{
@@ -52,21 +52,56 @@ void findKNN(float trainingFeatures[nOfSamples][nOfFeatures], int index[], float
 	}
 }
 
-int classificate(int labels[], int indexes[])
+int classificate(int labels[], int indexes[], int vote_type,
+		float tr_set[nOfSamples][nOfFeatures], float vect[], int dist_type)
 {
 	int score = 0;
 	int threshold = 0;
-	for (int i = 0; i < k; i++)
+	if(vote_type==VOTE_MAJORITY)
 	{
-		int tmp = indexes[i];
-		score = score + labels[tmp];
+		for (int i = 0; i < k; i++)
+		{
+			int tmp = indexes[i];
+			score = score + labels[tmp];
+		}
+		threshold = floor(k/2);
+		if (score > threshold)
+			score = 1;
+		else
+			score = 0;
 	}
-	threshold = floor(k/2);
-	if (score > threshold)
-		return 1;
-	else
-		return 0;
-}
+	else if(vote_type==VOTE_WEIGHTED)
+	{
+		float dist=0;
+		float weight=0;
+		float result=0;
+		for (int i = 0; i < k; i++)
+		{
+			int tmp = indexes[i];
+			dist=calculateDistance(tr_set[i],vect,dist_type);
+			weight=weightedVote(dist);
 
+			if(labels[tmp]==1)
+			{
+				result=result+weight;
+			}
+			else
+			{
+				result=result-weight;
+			}
+		}
+		if(result>0)
+			score=1;
+		else
+			score=0;
+	}
+	return score;
+}
+float weightedVote(float dist)
+{
+	float result=0;
+	result=1/(1+dist);
+	return result;
+}
 
 
