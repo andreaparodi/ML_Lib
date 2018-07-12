@@ -14,17 +14,17 @@ int main(void)
 	{
 		LSM6DSL_present = ENABLE;
 		char *msg = "\n\rLSM6DSL found on the I2C bus! \r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
+		//HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
 		LSM6DSL_Config();
 	}
 	else
 	{
 		char *msg = "\n\rNOT FOUND \r\n";
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
+		//HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), 0xFFFF);
 		LSM6DSL_present = DISABLE;
 	}
 	//caratteri utilizzati frequentemente nell'output (debug)
-	char buffer[100];
+	char buffer[200];
 	char *newline = "\n\r";
 	char *tab = "\t";
 	char *virgola = ",";
@@ -32,10 +32,15 @@ int main(void)
 	char *closeGraffa = "}";
 
 
+
+	HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+	HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+
 	__HAL_RCC_TIM5_CLK_ENABLE();
+	__HAL_RCC_TIM4_CLK_ENABLE();
 	float training_time=0;
 	float sample_time=0;
-
+	const float scaling_time_factor = 15377;
 
 
 
@@ -64,7 +69,7 @@ int main(void)
 
 	int indexes[nOfSamples]={0};
 
-	int program_mode=4;
+	int program_mode=6;
 	/*
 	 * 0 = kNN, distanza euclidea, voto maggioranza
 	 * 1 = kNN, distanza euclidea, voto pesato
@@ -77,17 +82,17 @@ int main(void)
 
 	switch (program_mode)
 	{
-	case 0:
-	{
-		dist_type=EUCLIDEAN_DISTANCE;
-		vote_type=VOTE_MAJORITY;
-		for(int i = 0;i<nOfSamples;i++)
+		case 0:
 		{
-			indexes[i]=i;
+			dist_type=EUCLIDEAN_DISTANCE;
+			vote_type=VOTE_MAJORITY;
+			for(int i = 0;i<nOfSamples;i++)
+			{
+				indexes[i]=i;
+			}
+			break;
 		}
-		break;
-	}
-	case 1:
+		case 1:
 		{
 			dist_type=EUCLIDEAN_DISTANCE;
 			vote_type=VOTE_WEIGHTED;
@@ -97,7 +102,7 @@ int main(void)
 			}
 			break;
 		}
-	case 2:
+		case 2:
 		{
 			dist_type=MANHATTAN_DISTANCE;
 			vote_type=VOTE_MAJORITY;
@@ -107,7 +112,7 @@ int main(void)
 			}
 			break;
 		}
-	case 3:
+		case 3:
 		{
 			dist_type=MANHATTAN_DISTANCE;
 			vote_type=VOTE_WEIGHTED;
@@ -117,13 +122,13 @@ int main(void)
 			}
 			break;
 		}
-	case 4:
-	{
-		randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
-		cross_train=CROSSTRAIN_DISABLED;
-		break;
-	}
-	case 5:
+		case 4:
+		{
+			randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
+			cross_train=CROSSTRAIN_DISABLED;
+			break;
+		}
+		case 5:
 		{
 			randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
 			cross_train=CROSSTRAIN_ENABLED;
@@ -449,9 +454,10 @@ int main(void)
 		{
 			TIM5->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
 			TIM5->CR1 = 1;
-			(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
+			train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
 			uint32_t time_el = TIM5->CNT;
 			training_time=(float)time_el;
+			training_time=training_time/scaling_time_factor;
 			break;
 		}
 		case 5:
@@ -461,6 +467,7 @@ int main(void)
 			crosstrain(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
 			uint32_t time_el = TIM5->CNT;
 			training_time=(float)time_el;
+			training_time=training_time/scaling_time_factor;
 			break;
 		}
 		case 6:
@@ -470,15 +477,19 @@ int main(void)
 			train_hyperplane(trainingSetFeatures, trainingLabels, w, bias);
 			uint32_t time_el = TIM5->CNT;
 			training_time=(float)time_el;
+			training_time=training_time/scaling_time_factor;
 			break;
 		}
 	}
+	training_time=training_time/1000;
 
 	int testLabel=0;
 	int correctClass=0;
 	char *classMessage="";
 	if(program_mode==0||program_mode==1||program_mode==2||program_mode==3)
 	{
+		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
+		TIM4->CR1 = 1;
 		for(int test=0;test<testSetSize;test++)
 		{
 			findKNN(trainingSetFeatures,indexes,testSet[test],dist_type);
@@ -495,8 +506,21 @@ int main(void)
 				correctClass++;
 			}
 		}
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		uint32_t time_el = TIM4->CNT;
+		sample_time=(float)time_el;
+		sample_time=sample_time/scaling_time_factor;
+		sample_time=sample_time/testSetSize;
+
+		/*
+		//TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
+		//TIM4->CR1 = 1;
+		uint32_t time_el = TIM4->CNT;
+		sample_time=(float)time_el;
+		sample_time=sample_time/scaling_time_factor;
+		sample_time=sample_time/testSetSize;*/
+
+		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		if(program_mode==0)
 			classMessage="Classificazione tramite k-NN con distanza euclidea e voto di maggioranza";
 		else if(program_mode==1)
@@ -507,10 +531,18 @@ int main(void)
 			classMessage="Classificazione tramite k-NN con distanza Manhattan e voto pesato";
 		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		classMessage="Classificazioni corrette (su 50): ";
 		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
 		snprintf(buffer, sizeof buffer, "%i", correctClass);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
+		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%5f", sample_time);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 	}
 	else if(program_mode==4||program_mode==5)
@@ -523,23 +555,46 @@ int main(void)
 						correctClass++;
 			}
 		}
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		if(program_mode==4)
 			classMessage="Classificazione con rete neurale addestrata su tutto il training set";
-		else if(program_mode==5)
-			classMessage="Classificazione con rete neurale addestrata con crosstrain";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		//else if(program_mode==5)
+			//classMessage="Classificazione con rete neurale addestrata con crosstrain";
+		//HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		classMessage="Classificazioni corrette (su 50): ";
 		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
 		snprintf(buffer, sizeof buffer, "%i", correctClass);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Tempo di addestramento: ";
-		snprintf(buffer, sizeof buffer, "%f", training_time);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		classMessage="Tempo di addestramento (circa) in secondi: ";
+		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%5f", training_time);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+
+		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
+		TIM4->CR1 = 1;
+		calculateOutput(inputNodes,hiddenNodes,outputNodes,testSet[6]);
+		uint32_t time_el = TIM4->CNT;
+		sample_time=(float)time_el;
+		sample_time=sample_time/scaling_time_factor;
+		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
+		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%9f", sample_time);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+
+		/*
+				//TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
+				//TIM4->CR1 = 1;
+				uint32_t time_el = TIM4->CNT;
+				sample_time=(float)time_el;
+				sample_time=sample_time/scaling_time_factor;*/
+
 	}
 	else if(program_mode==6)
 	{
@@ -555,19 +610,35 @@ int main(void)
 							correctClass++;
 						}
 		}
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		classMessage="Classificazione tramite perceptron classifier";
 		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		classMessage="Classificazioni corrette (su 50): ";
 		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
 		snprintf(buffer, sizeof buffer, "%i", correctClass);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Tempo di addestramento: ";
-		snprintf(buffer, sizeof buffer, "%f", training_time);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		classMessage="Tempo di addestramento (circa) in secondi: ";
+		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%5f", training_time);
 		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+
+		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
+		TIM4->CR1 = 1;
+		predictLabel(w,testSet[6], bias);
+		//HAL_Delay(100);
+		uint32_t time_el = TIM4->CNT;
+		sample_time=(float)time_el;
+		sample_time=sample_time/scaling_time_factor;
+		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
+		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
+		snprintf(buffer, sizeof buffer, "%5f", sample_time);
+		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
+		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 	}
 	//serve per l'eventuale crosstrain

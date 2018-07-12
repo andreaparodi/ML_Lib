@@ -39,18 +39,6 @@ void train_hyperplane(float tr_set[nOfSamples][nOfFeatures],
 				}
 			}
 		}
-		//serve per verifica
-		int pos_counter = 0;
-		for (int i = 0; i < nOfSamples; i++)
-		{
-			int label = predictLabel(w, tr_set[i], bias);
-			//printf("%i\n", label);
-			if (label == 1)
-			{
-				pos_counter++;
-			}
-		}
-		//printf("%i\n", pos_counter);
 }
 
 int predictLabel(float w[], float in_vect[], float b)

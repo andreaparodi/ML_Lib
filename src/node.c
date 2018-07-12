@@ -32,7 +32,7 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 		hValues[h] = hn[h].bias;
 		for (int i = 0; i < nOfFeatures; i++)
 		{
-			//calcolo dell'argomento della funzione di attivazione come somma dei prodotti in*peso
+			//calcolo dell'argomento della funzione di attivazione 				come somma dei prodotti in*peso
 			hValues[h] = hValues[h] + (in[i].value*in[i].weights[h]);
 
 			//applicazione della funzione di attivazione
@@ -45,7 +45,7 @@ void feedForward(InputNode in[], HiddenNode hn[], OutputNode on[])
 		oValues[o] = on[o].bias;
 		for (int h = 0; h < nOfHiddenNodes; h++)
 		{
-			//calcolo dell'argomento della funzione di attivazione come somma dei prodotti hid*peso
+			//calcolo dell'argomento della funzione di attivazione 				come somma dei prodotti hid*peso
 			oValues[o] = oValues[o] + (hn[h].value*hn[h].weights[o]);
 			//applicazione della funzione di attivazione
 			on[o].value = fsigmoid(oValues[o]);
@@ -158,7 +158,6 @@ void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[]
 void train(InputNode in[], HiddenNode hn[], OutputNode on[],
 		float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
-
 	for(int ind=0;ind<nOfSamples/2;ind++)
 	{
 		rec_train(in,hn,on,inputFeatures[ind],labels[ind]);
@@ -289,7 +288,7 @@ char buffer[100];
 				}
 			}
 		}
-
+/*
 		//debug verifica degli indici
 		for(int i =0;i<sampleToAvoid*2;i++)
 		{
@@ -297,7 +296,7 @@ char buffer[100];
 			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 		}
-
+*/
 		int c1 = 0;
 		int c2 = sampleToAvoid;
 		//training che evita gli indici esclusi
@@ -328,18 +327,36 @@ char buffer[100];
 		//verifico l'etichetta dei 15+15 vettori esclusi
 		int ct_labels[sampleToAvoid*2]={0};
 		int tmp_ind;
+		int correctClass=0;
+		char *mes="Classificazione con rete neurale addestrata con crosstrain";
 		for (int i = 0;i<sampleToAvoid*2;i++)
 		{
 			tmp_ind=indexNoTrain[i];
 			ct_labels[i]=calculateSampleLabel(in,hn,on,inputFeatures[tmp_ind]);
+			if(ct_labels[i]==labels[tmp_ind])
+			{
+				correctClass++;
+			}
 		}
 		//stampa i valori
-		for (int i = 0;i<sampleToAvoid*2;i++)
-		{
+		//for (int i = 0;i<sampleToAvoid*2;i++)
+		//{
+			/*
 			snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
 			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-		}
+			*/
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+
+			mes="Classificazioni corrette degli elementi esclusi dal training (su 30): ";
+			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
+			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
+			snprintf(buffer, sizeof buffer, "%i", correctClass);
+			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
+
+		//}
 	}
 //generazione di valori random tra -0.5 e 0.5 utilizzata per bias e pesi
 float generateRandomWeights()
