@@ -230,7 +230,7 @@ void crosstrain(InputNode in[], HiddenNode hn[], OutputNode on[],
 
 	for (int irand = 0; irand < sampleToAvoid; irand++)
 	{
-		temp = rand() % 50;
+		temp = rand() % 74;
 		for (int i = 0; i < irand; i++)
 		{
 			if (temp != indexNoTrain[i])
@@ -257,7 +257,7 @@ char buffer[100];
 
 	for (int irand = 0; irand < sampleToAvoid; irand++)
 	{
-		temp = (rand() % 50) + 50;
+		temp = (rand() % 74) + 74;
 		for (int i = 0; i < irand; i++)
 		{
 			if (temp != indexNoTrain[i + sampleToAvoid])
@@ -350,7 +350,7 @@ char buffer[100];
 			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 
-			mes="Classificazioni corrette degli elementi esclusi dal training (su 30): ";
+			mes="Classificazioni corrette degli elementi esclusi dal training (su 60): ";
 			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
 			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
 			snprintf(buffer, sizeof buffer, "%i", correctClass);

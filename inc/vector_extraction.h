@@ -9,7 +9,6 @@
 #include "math.h"
 #include "main.h"
 
-#define cutoff_correlation 0.1
 
 float calculateMean(float vect[]);
 float calculateVar(float vect[], float mean);

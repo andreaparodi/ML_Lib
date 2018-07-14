@@ -4,9 +4,8 @@
 
 #include "main.h"
 
-#define nOfFeatures 	15
-#define nOfSamples 		100
-#define nOfFeatures 	15
+#define nOfFeatures 	60
+#define nOfSamples 		208
 #define alpha_learning 	0.1
 #define cycles 			100
 

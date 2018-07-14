@@ -31,11 +31,11 @@
 //valore di inizializzazione per i valori
 #define defaultNodeValue 0
 //numero di esempi nel training set
-#define nOfSamples 100
+#define nOfSamples 208
 //numero di cicli di training sullo stesso esempio
 #define max_rep 1
 //numero dei vettori di training da non considerare per ogni classe
-#define sampleToAvoid 15
+#define sampleToAvoid 60
 //tempo tra due letture
 #define sampleTime 100
 //elementi di un vettore di training/da classificare
@@ -43,7 +43,7 @@
 //numero di volte che vengono scelte delle coppie se in modalità training random
 #define randomTrainingModeCycles 500
 
-#define testSetSize 50
+#define testSetSize 106
 /*
  * Random setup = tutti gli elementi della rete sono inizializzati random
  * Load from function = carica i pesi e i bias della rete che sono cablati dentro una funzione, generabile

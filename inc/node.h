@@ -12,15 +12,15 @@
 #include  <stdio.h>
 
 //numero delle features estratte = numero degli input
-#define nOfFeatures 15
+#define nOfFeatures 60
 //numero dei nodi "hidden"
-#define nOfHiddenNodes 30
+#define nOfHiddenNodes 70
 //numero delle classi = numero dei nodi di out
 #define nOfOutputNodes 1
 //parametro di apprendimento //eta
-#define learningRate 0.175
+#define learningRate 0.1
 
-#define nOfSamples 100
+#define nOfSamples 208
 
 
 //numero totale dei pesi della rete
@@ -28,7 +28,7 @@
 //numero totale dei bias della rete
 #define nOfBiases (nOfOutputNodes+nOfHiddenNodes)
 //errore massimo accettato in fase di training
-#define thresholdError 0.1
+#define thresholdError 0.3
 
 #define CROSSTRAIN_DISABLED	0
 #define CROSSTRAIN_ENABLED	1
