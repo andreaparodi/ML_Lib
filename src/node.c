@@ -97,64 +97,6 @@ void randomSetupNodes(InputNode in[], HiddenNode hn[], OutputNode on[])
 		on[o].bias = defaultBias;
 	}
 }
-
-/*
-void loadTrainedNetworkFromFile(InputNode in[], HiddenNode hn[], OutputNode on[])
-{
-	//FILE* network = NULL;
-	float temp = 0.0;
-
-	FILE* network = fopen("network.txt", "a"); //"a" serve per crearlo
-
-
-	network = fopen("network.txt", "r");
-	if (network != NULL)
-	{
-
-		//scrittura pesi e bias sui nodi
-		for (int i = 0; i < nOfFeatures; i++)
-		{
-			for (int h = 0; h < nOfHiddenNodes; h++)
-			{
-				//fscanf_s(network, "%f", &temp);
-				fscanf(network, "%f", &temp);
-				in[i].weights[h] = temp;
-			}
-		}
-		for (int h = 0; h < nOfHiddenNodes; h++)
-		{
-			for (int o = 0; o < nOfOutputNodes; o++)
-			{
-				//fscanf_s(network, "%f", &temp);
-				fscanf(network, "%f", &temp);
-				hn[h].weights[o] = temp;
-			}
-		}
-		for (int h = 0; h < nOfHiddenNodes; h++)
-		{
-			//fscanf_s(network, "%f", &temp);
-			fscanf(network, "%f", &temp);
-			hn[h].bias = temp;
-		}
-		for (int o = 0; o < nOfOutputNodes; o++)
-		{
-			//fscanf_s(network, "%f", &temp);
-			fscanf(network, "%f", &temp);
-			on[o].bias = temp;
-		}
-	}
-	else
-	{
-		char *mess ="File not found\n\r";
-		HAL_UART_Transmit(&huart2, (uint8_t*)mess, strlen(mess), 0xFFFF);
-		//printf("File not found!");
-		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-	}
-	fclose(network);
-}
-*/
-
-
 void train(InputNode in[], HiddenNode hn[], OutputNode on[],
 		float inputFeatures[nOfSamples][nOfFeatures], int labels[])
 {
@@ -338,25 +280,6 @@ char buffer[100];
 				correctClass++;
 			}
 		}
-		//stampa i valori
-		//for (int i = 0;i<sampleToAvoid*2;i++)
-		//{
-			/*
-			snprintf(buffer, sizeof buffer, "%i", ct_labels[i]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			*/
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-			mes="Classificazioni corrette degli elementi esclusi dal training (su 60): ";
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) mes, strlen(mes), 0xFFFF);
-			snprintf(buffer, sizeof buffer, "%i", correctClass);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-
-		//}
 	}
 //generazione di valori random tra -0.5 e 0.5 utilizzata per bias e pesi
 float generateRandomWeights()

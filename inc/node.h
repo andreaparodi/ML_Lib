@@ -14,13 +14,13 @@
 //numero delle features estratte = numero degli input
 #define nOfFeatures 60
 //numero dei nodi "hidden"
-#define nOfHiddenNodes 70
+#define nOfHiddenNodes 30
 //numero delle classi = numero dei nodi di out
 #define nOfOutputNodes 1
 //parametro di apprendimento //eta
 #define learningRate 0.1
 
-#define nOfSamples 208
+#define nOfSamples 190
 
 
 //numero totale dei pesi della rete
@@ -28,7 +28,7 @@
 //numero totale dei bias della rete
 #define nOfBiases (nOfOutputNodes+nOfHiddenNodes)
 //errore massimo accettato in fase di training
-#define thresholdError 0.3
+#define thresholdError 0.2
 
 #define CROSSTRAIN_DISABLED	0
 #define CROSSTRAIN_ENABLED	1

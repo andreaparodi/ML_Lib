@@ -4,7 +4,7 @@
 
 #include "main.h"
 
-#define k 13
+#define k 3
 
 #define EUCLIDEAN_DISTANCE 0
 #define MANHATTAN_DISTANCE 1

@@ -10,6 +10,7 @@ int main(void)
 	I2C1_init();
 	BSP_LED_Init(LED2);
 
+
 	if (LSM6DSL_Who_Am_I() == LSM6DSL_WHO_AM_I_VAL)
 	{
 		LSM6DSL_present = ENABLE;
@@ -24,7 +25,7 @@ int main(void)
 		LSM6DSL_present = DISABLE;
 	}
 
-	//caratteri utilizzati frequentemente nell'output (debug)
+	//caratteri utilizzati nell'output (debug)
 	char buffer[200];
 	char *newline = "\n\r";
 	char *tab = "\t";
@@ -34,31 +35,12 @@ int main(void)
 
 
 
+	//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 	HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-
-	__HAL_RCC_TIM5_CLK_ENABLE();
-	__HAL_RCC_TIM4_CLK_ENABLE();
-	float training_time=0;
-	float sample_time=0;
-	const float scaling_time_factor = 15377;
-
 
 	int cross_train;
 
 
-//	char *sep="#################";
-//	char *media="media: ";
-
-
-
-	//valori che decidono il funzionamento del dispositivo
-	//tipo di funzionamento
-	//int mode = WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM;//WORK_MODE_RANDOM_SETUP  WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM WORK_MODE_LOAD_NETWORK_FROM_FUNCTION
-	//abilitazione del crosstrain
-	//int ct = CROSSTRAIN_ENABLED;
-	//training che assicura l'utilizzo di ogni elemento del training set o training random
-	//int tr_mode = TRAINING_MODE_FULL;
 	//mostrare i dati letti dal sensore ad ogni ciclo
 	int show_sens_data = NOT_SHOW_SENS_DATA;
 
@@ -78,7 +60,7 @@ int main(void)
 	float bias=0;
 	float w[nOfFeatures]={0};
 
-	int program_mode=0;
+	int program_mode=1;
 	/*
 	 * 0 = kNN, distanza euclidea, voto maggioranza
 	 * 1 = kNN, distanza euclidea, voto pesato
@@ -130,22 +112,9 @@ int main(void)
 	}
 
 
-
-
-
-
-
-
 	//training set
 	float trainingSetFeatures[nOfSamples][nOfFeatures] =
 	{
-		{ 0.0200,0.0371,0.0428,0.0207,0.0954,0.0986,0.1539,0.1601,0.3109,0.2111,0.1609,0.1582, 0.2238, 0.0645, 0.0660, 0.2273, 0.3100, 0.2999, 0.5078, 0.4797, 0.5783, 0.5071, 0.4328, 0.5550, 0.6711, 0.6415, 0.7104, 0.8080, 0.6791, 0.3857, 0.1307, 0.2604, 0.5121, 0.7547, 0.8537, 0.8507, 0.6692, 0.6097, 0.4943, 0.2744, 0.0510, 0.2834, 0.2825, 0.4256, 0.2641, 0.1386, 0.1051, 0.1343, 0.0383, 0.0324, 0.0232, 0.0027, 0.0065, 0.0159, 0.0072, 0.0167, 0.0180, 0.0084, 0.0090, 0.0032},
-		{ 0.0453,0.0523,0.0843,0.0689,0.1183,0.2583,0.2156,0.3481,0.3337,0.2872,0.4918,0.6552,0.6919,0.7797,0.7464,0.9444,1.0000,0.8874,0.8024,0.7818,0.5212,0.4052,0.3957,0.3914,0.3250,0.3200,0.3271,0.2767,0.4423,0.2028,0.3788,0.2947,0.1984,0.2341,0.1306,0.4182,0.3835,0.1057,0.1840,0.1970,0.1674,0.0583,0.1401,0.1628,0.0621,0.0203,0.0530,0.0742,0.0409,0.0061,0.0125,0.0084,0.0089,0.0048,0.0094,0.0191,0.0140,0.0049,0.0052,0.0044 },
-		{ 0.0262,0.0582,0.1099,0.1083,0.0974,0.2280,0.2431,0.3771,0.5598,0.6194,0.6333,0.7060,0.5544,0.5320,0.6479,0.6931,0.6759,0.7551,0.8929,0.8619,0.7974,0.6737,0.4293,0.3648,0.5331,0.2413,0.5070,0.8533,0.6036,0.8514,0.8512,0.5045,0.1862,0.2709,0.4232,0.3043,0.6116,0.6756,0.5375,0.4719,0.4647,0.2587,0.2129,0.2222,0.2111,0.0176,0.1348,0.0744,0.0130,0.0106,0.0033,0.0232,0.0166,0.0095,0.0180,0.0244,0.0316,0.0164,0.0095,0.0078 },
-		{ 0.0100,0.0171,0.0623,0.0205,0.0205,0.0368,0.1098,0.1276,0.0598,0.1264,0.0881,0.1992,0.0184,0.2261,0.1729,0.2131,0.0693,0.2281,0.4060,0.3973,0.2741,0.3690,0.5556,0.4846,0.3140,0.5334,0.5256,0.2520,0.2090,0.3559,0.6260,0.7340,0.6120,0.3497,0.3953,0.3012,0.5408,0.8814,0.9857,0.9167,0.6121,0.5006,0.3210,0.3202,0.4295,0.3654,0.2655,0.1576,0.0681,0.0294,0.0241,0.0121,0.0036,0.0150,0.0085,0.0073,0.0050,0.0044,0.0040,0.0117 },
-		{ 0.0762,0.0666,0.0481,0.0394,0.0590,0.0649,0.1209,0.2467,0.3564,0.4459,0.4152,0.3952,0.4256,0.4135,0.4528,0.5326,0.7306,0.6193,0.2032,0.4636,0.4148,0.4292,0.5730,0.5399,0.3161,0.2285,0.6995,1.0000,0.7262,0.4724,0.5103,0.5459,0.2881,0.0981,0.1951,0.4181,0.4604,0.3217,0.2828,0.2430,0.1979,0.2444,0.1847,0.0841,0.0692,0.0528,0.0357,0.0085,0.0230,0.0046,0.0156,0.0031,0.0054,0.0105,0.0110,0.0015,0.0072,0.0048,0.0107,0.0094 },
-		{ 0.0286,0.0453,0.0277,0.0174,0.0384,0.0990,0.1201,0.1833,0.2105,0.3039,0.2988,0.4250,0.6343,0.8198,1.0000,0.9988,0.9508,0.9025,0.7234,0.5122,0.2074,0.3985,0.5890,0.2872,0.2043,0.5782,0.5389,0.3750,0.3411,0.5067,0.5580,0.4778,0.3299,0.2198,0.1407,0.2856,0.3807,0.4158,0.4054,0.3296,0.2707,0.2650,0.0723,0.1238,0.1192,0.1089,0.0623,0.0494,0.0264,0.0081,0.0104,0.0045,0.0014,0.0038,0.0013,0.0089,0.0057,0.0027,0.0051,0.0062 },
-		{ 0.0317,0.0956,0.1321,0.1408,0.1674,0.1710,0.0731,0.1401,0.2083,0.3513,0.1786,0.0658,0.0513,0.3752,0.5419,0.5440,0.5150,0.4262,0.2024,0.4233,0.7723,0.9735,0.9390,0.5559,0.5268,0.6826,0.5713,0.5429,0.2177,0.2149,0.5811,0.6323,0.2965,0.1873,0.2969,0.5163,0.6153,0.4283,0.5479,0.6133,0.5017,0.2377,0.1957,0.1749,0.1304,0.0597,0.1124,0.1047,0.0507,0.0159,0.0195,0.0201,0.0248,0.0131,0.0070,0.0138,0.0092,0.0143,0.0036,0.0103 },
 		{ 0.0519,0.0548,0.0842,0.0319,0.1158,0.0922,0.1027,0.0613,0.1465,0.2838,0.2802,0.3086,0.2657,0.3801,0.5626,0.4376,0.2617,0.1199,0.6676,0.9402,0.7832,0.5352,0.6809,0.9174,0.7613,0.8220,0.8872,0.6091,0.2967,0.1103,0.1318,0.0624,0.0990,0.4006,0.3666,0.1050,0.1915,0.3930,0.4288,0.2546,0.1151,0.2196,0.1879,0.1437,0.2146,0.2360,0.1125,0.0254,0.0285,0.0178,0.0052,0.0081,0.0120,0.0045,0.0121,0.0097,0.0085,0.0047,0.0048,0.0053 },
 		{ 0.0223,0.0375,0.0484,0.0475,0.0647,0.0591,0.0753,0.0098,0.0684,0.1487,0.1156,0.1654,0.3833,0.3598,0.1713,0.1136,0.0349,0.3796,0.7401,0.9925,0.9802,0.8890,0.6712,0.4286,0.3374,0.7366,0.9611,0.7353,0.4856,0.1594,0.3007,0.4096,0.3170,0.3305,0.3408,0.2186,0.2463,0.2726,0.1680,0.2792,0.2558,0.1740,0.2121,0.1099,0.0985,0.1271,0.1459,0.1164,0.0777,0.0439,0.0061,0.0145,0.0128,0.0145,0.0058,0.0049,0.0065,0.0093,0.0059,0.0022 },
 		{ 0.0164,0.0173,0.0347,0.0070,0.0187,0.0671,0.1056,0.0697,0.0962,0.0251,0.0801,0.1056,0.1266,0.0890,0.0198,0.1133,0.2826,0.3234,0.3238,0.4333,0.6068,0.7652,0.9203,0.9719,0.9207,0.7545,0.8289,0.8907,0.7309,0.6896,0.5829,0.4935,0.3101,0.0306,0.0244,0.1108,0.1594,0.1371,0.0696,0.0452,0.0620,0.1421,0.1597,0.1384,0.0372,0.0688,0.0867,0.0513,0.0092,0.0198,0.0118,0.0090,0.0223,0.0179,0.0084,0.0068,0.0032,0.0035,0.0056,0.0040 },
@@ -336,25 +305,14 @@ int main(void)
 			{ 0.0392,0.0108,0.0267,0.0257,0.0410,0.0491,0.1053,0.1690,0.2105,0.2471,0.2680,0.3049,0.2863,0.2294,0.1165,0.2127,0.2062,0.2222,0.3241,0.4330,0.5071,0.5944,0.7078,0.7641,0.8878,0.9711,0.9880,0.9812,0.9464,0.8542,0.6457,0.3397,0.3828,0.3204,0.1331,0.0440,0.1234,0.2030,0.1652,0.1043,0.1066,0.2110,0.2417,0.1631,0.0769,0.0723,0.0912,0.0812,0.0496,0.0101,0.0089,0.0083,0.0080,0.0026,0.0079,0.0042,0.0071,0.0044,0.0022,0.0014 },
 			{ 0.0129,0.0141,0.0309,0.0375,0.0767,0.0787,0.0662,0.1108,0.1777,0.2245,0.2431,0.3134,0.3206,0.2917,0.2249,0.2347,0.2143,0.2939,0.4898,0.6127,0.7531,0.7718,0.7432,0.8673,0.9308,0.9836,1.0000,0.9595,0.8722,0.6862,0.4901,0.3280,0.3115,0.1969,0.1019,0.0317,0.0756,0.0907,0.1066,0.1380,0.0665,0.1475,0.2470,0.2788,0.2709,0.2283,0.1818,0.1185,0.0546,0.0219,0.0204,0.0124,0.0093,0.0072,0.0019,0.0027,0.0054,0.0017,0.0024,0.0029 },
 			{ 0.0050,0.0017,0.0270,0.0450,0.0958,0.0830,0.0879,0.1220,0.1977,0.2282,0.2521,0.3484,0.3309,0.2614,0.1782,0.2055,0.2298,0.3545,0.6218,0.7265,0.8346,0.8268,0.8366,0.9408,0.9510,0.9801,0.9974,1.0000,0.9036,0.6409,0.3857,0.2908,0.2040,0.1653,0.1769,0.1140,0.0740,0.0941,0.0621,0.0426,0.0572,0.1068,0.1909,0.2229,0.2203,0.2265,0.1766,0.1097,0.0558,0.0142,0.0281,0.0165,0.0056,0.0010,0.0027,0.0062,0.0024,0.0063,0.0017,0.0028 },
-			{ 0.0366,0.0421,0.0504,0.0250,0.0596,0.0252,0.0958,0.0991,0.1419,0.1847,0.2222,0.2648,0.2508,0.2291,0.1555,0.1863,0.2387,0.3345,0.5233,0.6684,0.7766,0.7928,0.7940,0.9129,0.9498,0.9835,1.0000,0.9471,0.8237,0.6252,0.4181,0.3209,0.2658,0.2196,0.1588,0.0561,0.0948,0.1700,0.1215,0.1282,0.0386,0.1329,0.2331,0.2468,0.1960,0.1985,0.1570,0.0921,0.0549,0.0194,0.0166,0.0132,0.0027,0.0022,0.0059,0.0016,0.0025,0.0017,0.0027,0.0027 },
-			{ 0.0238,0.0318,0.0422,0.0399,0.0788,0.0766,0.0881,0.1143,0.1594,0.2048,0.2652,0.3100,0.2381,0.1918,0.1430,0.1735,0.1781,0.2852,0.5036,0.6166,0.7616,0.8125,0.7793,0.8788,0.8813,0.9470,1.0000,0.9739,0.8446,0.6151,0.4302,0.3165,0.2869,0.2017,0.1206,0.0271,0.0580,0.1262,0.1072,0.1082,0.0360,0.1197,0.2061,0.2054,0.1878,0.2047,0.1716,0.1069,0.0477,0.0170,0.0186,0.0096,0.0071,0.0084,0.0038,0.0026,0.0028,0.0013,0.0035,0.0060 },
-			{ 0.0116,0.0744,0.0367,0.0225,0.0076,0.0545,0.1110,0.1069,0.1708,0.2271,0.3171,0.2882,0.2657,0.2307,0.1889,0.1791,0.2298,0.3715,0.6223,0.7260,0.7934,0.8045,0.8067,0.9173,0.9327,0.9562,1.0000,0.9818,0.8684,0.6381,0.3997,0.3242,0.2835,0.2413,0.2321,0.1260,0.0693,0.0701,0.1439,0.1475,0.0438,0.0469,0.1476,0.1742,0.1555,0.1651,0.1181,0.0720,0.0321,0.0056,0.0202,0.0141,0.0103,0.0100,0.0034,0.0026,0.0037,0.0044,0.0057,0.0035 },
-			{ 0.0131,0.0387,0.0329,0.0078,0.0721,0.1341,0.1626,0.1902,0.2610,0.3193,0.3468,0.3738,0.3055,0.1926,0.1385,0.2122,0.2758,0.4576,0.6487,0.7154,0.8010,0.7924,0.8793,1.0000,0.9865,0.9474,0.9474,0.9315,0.8326,0.6213,0.3772,0.2822,0.2042,0.2190,0.2223,0.1327,0.0521,0.0618,0.1416,0.1460,0.0846,0.1055,0.1639,0.1916,0.2085,0.2335,0.1964,0.1300,0.0633,0.0183,0.0137,0.0150,0.0076,0.0032,0.0037,0.0071,0.0040,0.0009,0.0015,0.0085 },
-			{ 0.0335,0.0258,0.0398,0.0570,0.0529,0.1091,0.1709,0.1684,0.1865,0.2660,0.3188,0.3553,0.3116,0.1965,0.1780,0.2794,0.2870,0.3969,0.5599,0.6936,0.7969,0.7452,0.8203,0.9261,0.8810,0.8814,0.9301,0.9955,0.8576,0.6069,0.3934,0.2464,0.1645,0.1140,0.0956,0.0080,0.0702,0.0936,0.0894,0.1127,0.0873,0.1020,0.1964,0.2256,0.1814,0.2012,0.1688,0.1037,0.0501,0.0136,0.0130,0.0120,0.0039,0.0053,0.0062,0.0046,0.0045,0.0022,0.0005,0.0031 },
-			{ 0.0272,0.0378,0.0488,0.0848,0.1127,0.1103,0.1349,0.2337,0.3113,0.3997,0.3941,0.3309,0.2926,0.1760,0.1739,0.2043,0.2088,0.2678,0.2434,0.1839,0.2802,0.6172,0.8015,0.8313,0.8440,0.8494,0.9168,1.0000,0.7896,0.5371,0.6472,0.6505,0.4959,0.2175,0.0990,0.0434,0.1708,0.1979,0.1880,0.1108,0.1702,0.0585,0.0638,0.1391,0.0638,0.0581,0.0641,0.1044,0.0732,0.0275,0.0146,0.0091,0.0045,0.0043,0.0043,0.0098,0.0054,0.0051,0.0065,0.0103 },
-			{ 0.0187,0.0346,0.0168,0.0177,0.0393,0.1630,0.2028,0.1694,0.2328,0.2684,0.3108,0.2933,0.2275,0.0994,0.1801,0.2200,0.2732,0.2862,0.2034,0.1740,0.4130,0.6879,0.8120,0.8453,0.8919,0.9300,0.9987,1.0000,0.8104,0.6199,0.6041,0.5547,0.4160,0.1472,0.0849,0.0608,0.0969,0.1411,0.1676,0.1200,0.1201,0.1036,0.1977,0.1339,0.0902,0.1085,0.1521,0.1363,0.0858,0.0290,0.0203,0.0116,0.0098,0.0199,0.0033,0.0101,0.0065,0.0115,0.0193,0.0157 },
-			{ 0.0323,0.0101,0.0298,0.0564,0.0760,0.0958,0.0990,0.1018,0.1030,0.2154,0.3085,0.3425,0.2990,0.1402,0.1235,0.1534,0.1901,0.2429,0.2120,0.2395,0.3272,0.5949,0.8302,0.9045,0.9888,0.9912,0.9448,1.0000,0.9092,0.7412,0.7691,0.7117,0.5304,0.2131,0.0928,0.1297,0.1159,0.1226,0.1768,0.0345,0.1562,0.0824,0.1149,0.1694,0.0954,0.0080,0.0790,0.1255,0.0647,0.0179,0.0051,0.0061,0.0093,0.0135,0.0063,0.0063,0.0034,0.0032,0.0062,0.0067 },
-			{ 0.0522,0.0437,0.0180,0.0292,0.0351,0.1171,0.1257,0.1178,0.1258,0.2529,0.2716,0.2374,0.1878,0.0983,0.0683,0.1503,0.1723,0.2339,0.1962,0.1395,0.3164,0.5888,0.7631,0.8473,0.9424,0.9986,0.9699,1.0000,0.8630,0.6979,0.7717,0.7305,0.5197,0.1786,0.1098,0.1446,0.1066,0.1440,0.1929,0.0325,0.1490,0.0328,0.0537,0.1309,0.0910,0.0757,0.1059,0.1005,0.0535,0.0235,0.0155,0.0160,0.0029,0.0051,0.0062,0.0089,0.0140,0.0138,0.0077,0.0031 },
-			{ 0.0303,0.0353,0.0490,0.0608,0.0167,0.1354,0.1465,0.1123,0.1945,0.2354,0.2898,0.2812,0.1578,0.0273,0.0673,0.1444,0.2070,0.2645,0.2828,0.4293,0.5685,0.6990,0.7246,0.7622,0.9242,1.0000,0.9979,0.8297,0.7032,0.7141,0.6893,0.4961,0.2584,0.0969,0.0776,0.0364,0.1572,0.1823,0.1349,0.0849,0.0492,0.1367,0.1552,0.1548,0.1319,0.0985,0.1258,0.0954,0.0489,0.0241,0.0042,0.0086,0.0046,0.0126,0.0036,0.0035,0.0034,0.0079,0.0036,0.0048 },
-			{ 0.0260,0.0363,0.0136,0.0272,0.0214,0.0338,0.0655,0.1400,0.1843,0.2354,0.2720,0.2442,0.1665,0.0336,0.1302,0.1708,0.2177,0.3175,0.3714,0.4552,0.5700,0.7397,0.8062,0.8837,0.9432,1.0000,0.9375,0.7603,0.7123,0.8358,0.7622,0.4567,0.1715,0.1549,0.1641,0.1869,0.2655,0.1713,0.0959,0.0768,0.0847,0.2076,0.2505,0.1862,0.1439,0.1470,0.0991,0.0041,0.0154,0.0116,0.0181,0.0146,0.0129,0.0047,0.0039,0.0061,0.0040,0.0036,0.0061,0.0115 }
 
 	};
 	//etichette associate ai vettori di training
 	//int trainingLabels[nOfSamples] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	//								   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-	int trainingLabels[nOfSamples]= { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,
-			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	int trainingLabels[nOfSamples]= { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,
+			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 	//normalizzazione
 	float max_values[nOfFeatures] = { 0 };
@@ -370,6 +328,7 @@ int main(void)
 			}
 		}
 	}
+
 	for (int i = 0; i < nOfFeatures; i++)
 	{
 		for (int sample = 0; sample < nOfSamples; sample++)
@@ -379,9 +338,6 @@ int main(void)
 	}
 	float testSet[testSetSize][nOfFeatures] =
 	{
-		{ 0.0286, 0.0453, 0.0277, 0.0174, 0.0384, 0.0990, 0.1201, 0.1833, 0.2105, 0.3039, 0.2988, 0.4250, 0.6343, 0.8198, 1.0000, 0.9988, 0.9508, 0.9025,	0.7234, 0.5122, 0.2074, 0.3985, 0.5890, 0.2872,	0.2043, 0.5782, 0.5389, 0.3750, 0.3411, 0.5067,		0.5580, 0.4778, 0.3299, 0.2198, 0.1407, 0.2856,	0.3807, 0.4158, 0.4054, 0.3296, 0.2707, 0.2650,	0.0723, 0.1238, 0.1192, 0.1089, 0.0623, 0.0494,	0.0264, 0.0081, 0.0104, 0.0045, 0.0014, 0.0038,0.0013, 0.0089, 0.0057, 0.0027, 0.0051, 0.0062},
-		{ 0.0123, 0.0309, 0.0169, 0.0313, 0.0358, 0.0102,0.0182, 0.0579, 0.1122, 0.0835, 0.0548, 0.0847,0.2026, 0.2557, 0.1870, 0.2032, 0.1463, 0.2849,0.5824, 0.7728, 0.7852, 0.8515, 0.5312, 0.3653,0.5973, 0.8275, 1.0000, 0.8673, 0.6301, 0.4591,0.3940, 0.2576, 0.2817, 0.2641, 0.2757, 0.2698,0.3994, 0.4576, 0.3940, 0.2522, 0.1782, 0.1354,0.0516, 0.0337, 0.0894, 0.0861, 0.0872, 0.0445,0.0134, 0.0217, 0.0188, 0.0133, 0.0265, 0.0224,0.0074, 0.0118, 0.0026, 0.0092, 0.0009, 0.0044 },
-		{ 0.0270, 0.0092, 0.0145, 0.0278, 0.0412, 0.0757,0.1026, 0.1138, 0.0794, 0.1520, 0.1675, 0.1370,0.1361, 0.1345, 0.2144, 0.5354, 0.6830, 0.5600,0.3093, 0.3226, 0.4430, 0.5573, 0.5782, 0.6173,0.8132, 0.9819, 0.9823, 0.9166, 0.7423, 0.7736,0.8473, 0.7352, 0.6671, 0.6083, 0.6239, 0.5972,0.5715, 0.5242, 0.2924, 0.1536, 0.2003, 0.2031,0.2207, 0.1778, 0.1353, 0.1373, 0.0749, 0.0472,0.0325, 0.0179, 0.0045, 0.0084, 0.0010, 0.0018,0.0068, 0.0039, 0.0120, 0.0132, 0.0070, 0.0088 },
 		{ 0.0473, 0.0509, 0.0819, 0.1252, 0.1783, 0.3070,
 			0.3008, 0.2362, 0.3830, 0.3759, 0.3021, 0.2909,
 			0.2301, 0.1411, 0.1582, 0.2430, 0.4474, 0.5964,
@@ -1383,61 +1339,13 @@ int main(void)
 			0.0638, 0.1391, 0.0638, 0.0581, 0.0641, 0.1044,
 			0.0732, 0.0275, 0.0146, 0.0091, 0.0045, 0.0043,
 			0.0043, 0.0098, 0.0054, 0.0051, 0.0065, 0.0103 },
-			{ 0.0187, 0.0346, 0.0168, 0.0177, 0.0393, 0.1630,
-			0.2028, 0.1694, 0.2328, 0.2684, 0.3108, 0.2933,
-			0.2275, 0.0994, 0.1801, 0.2200, 0.2732, 0.2862,
-			0.2034, 0.1740, 0.4130, 0.6879, 0.8120, 0.8453,
-			0.8919, 0.9300, 0.9987, 1.0000, 0.8104, 0.6199,
-			0.6041, 0.5547, 0.4160, 0.1472, 0.0849, 0.0608,
-			0.0969, 0.1411, 0.1676, 0.1200, 0.1201, 0.1036,
-			0.1977, 0.1339, 0.0902, 0.1085, 0.1521, 0.1363,
-			0.0858, 0.0290, 0.0203, 0.0116, 0.0098, 0.0199,
-			0.0033, 0.0101, 0.0065, 0.0115, 0.0193, 0.0157 },
-			{ 0.0522, 0.0437, 0.0180, 0.0292, 0.0351, 0.1171,
-			0.1257, 0.1178, 0.1258, 0.2529, 0.2716, 0.2374,
-			0.1878, 0.0983, 0.0683, 0.1503, 0.1723, 0.2339,
-			0.1962, 0.1395, 0.3164, 0.5888, 0.7631, 0.8473,
-			0.9424, 0.9986, 0.9699, 1.0000, 0.8630, 0.6979,
-			0.7717, 0.7305, 0.5197, 0.1786, 0.1098, 0.1446,
-			0.1066, 0.1440, 0.1929, 0.0325, 0.1490, 0.0328,
-			0.0537, 0.1309, 0.0910, 0.0757, 0.1059, 0.1005,
-			0.0535, 0.0235, 0.0155, 0.0160, 0.0029, 0.0051,
-			0.0062, 0.0089, 0.0140, 0.0138, 0.0077, 0.0031 },
-			{ 0.0260, 0.0363, 0.0136, 0.0272, 0.0214, 0.0338,
-			0.0655, 0.1400, 0.1843, 0.2354, 0.2720, 0.2442,
-			0.1665, 0.0336, 0.1302, 0.1708, 0.2177, 0.3175,
-			0.3714, 0.4552, 0.5700, 0.7397, 0.8062, 0.8837,
-			0.9432, 1.0000, 0.9375, 0.7603, 0.7123, 0.8358,
-			0.7622, 0.4567, 0.1715, 0.1549, 0.1641, 0.1869,
-			0.2655, 0.1713, 0.0959, 0.0768, 0.0847, 0.2076,
-			0.2505, 0.1862, 0.1439, 0.1470, 0.0991, 0.0041,
-			0.0154, 0.0116, 0.0181, 0.0146, 0.0129, 0.0047,
-			0.0039, 0.0061, 0.0040, 0.0036, 0.0061, 0.0115 }
+
 	};
 
 
-/*
-	int testSetLabels[testSetSize] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-									   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-	*/
-	/*
-	int testSetLabels[testSetSize]={0,     0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,
-			0,      0,      0,      0,      0,      0,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,      1,
-			1,      1,      1,      1,      1,      };
-	*/
-	int testSetLabels[testSetSize] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+
+	int testSetLabels[testSetSize] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+			1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 
 	//normalizzazione del test set
 	for (int i = 0; i < nOfFeatures; i++)
@@ -1448,247 +1356,92 @@ int main(void)
 		}
 	}
 
-	//switch training
+
 	switch (program_mode)
-		{
-		case 4:
-		{
-			TIM5->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-			TIM5->CR1 = 1;
-			for(int i=0;i<2;i++)
+			{
+			case 4:
 			{
 				train(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
+				break;
 			}
-			uint32_t time_el = TIM5->CNT;
-			training_time=(float)time_el;
-			training_time=training_time/scaling_time_factor;
-			break;
+			case 5:
+			{
+				crosstrain(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
+				break;
+			}
+			case 6:
+			{
+				train_hyperplane(trainingSetFeatures, trainingLabels, w, bias);
+				break;
+			}
 		}
-		case 5:
-		{
-			TIM5->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-			TIM5->CR1 = 1;
-			crosstrain(inputNodes, hiddenNodes, outputNodes, trainingSetFeatures, trainingLabels);
-			uint32_t time_el = TIM5->CNT;
-			training_time=(float)time_el;
-			training_time=training_time/scaling_time_factor;
-			break;
-		}
-		case 6:
-		{
-			TIM5->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-			TIM5->CR1 = 1;
-			train_hyperplane(trainingSetFeatures, trainingLabels, w, bias);
-			uint32_t time_el = TIM5->CNT;
-			training_time=(float)time_el;
-			training_time=training_time/scaling_time_factor;
-			break;
-		}
-	}
-	training_time=training_time/1000;
+	char *classMessage="";
 
 	int testLabel=0;
 	int correctClass=0;
-	char *classMessage="";
+
 	if(program_mode==0||program_mode==1||program_mode==2||program_mode==3)
-	{
-		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-		TIM4->CR1 = 1;
-		for(int test=0;test<testSetSize;test++)
 		{
-			findKNN(trainingSetFeatures,indexes,testSet[test],dist_type);
-			testLabel=classificate(trainingLabels, indexes, vote_type,
-					 	trainingSetFeatures, testSet[test], dist_type);
-
-			for (int i = 0; i<nOfSamples; i++)
-			{
-				indexes[i] = i;
-			}
-
-			if(testLabel==testSetLabels[test])
-			{
-				correctClass++;
-			}
-		}
-		uint32_t time_el = TIM4->CNT;
-		sample_time=(float)time_el;
-		sample_time=sample_time/scaling_time_factor;
-		sample_time=sample_time/testSetSize;
-
-		/*
-		//TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-		//TIM4->CR1 = 1;
-		uint32_t time_el = TIM4->CNT;
-		sample_time=(float)time_el;
-		sample_time=sample_time/scaling_time_factor;
-		sample_time=sample_time/testSetSize;*/
-
-		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		if(program_mode==0)
-			classMessage="Classificazione tramite k-NN con distanza euclidea e voto di maggioranza";
-		else if(program_mode==1)
-			classMessage="Classificazione tramite k-NN con distanza euclidea e voto pesato";
-		else if(program_mode==2)
-			classMessage="Classificazione tramite k-NN con distanza Manhattan e voto di maggioranza";
-		else if(program_mode==3)
-			classMessage="Classificazione tramite k-NN con distanza Manhattan e voto pesato";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Classificazioni corrette (su 106): ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%i", correctClass);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%5f", sample_time);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-	}
-	else if(program_mode==4||program_mode==5)
-	{
 		for(int test=0;test<testSetSize;test++)
-		{
-			testLabel=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,testSet[test]);
-			if(testLabel==testSetLabels[test])
 			{
+				findKNN(trainingSetFeatures,indexes,testSet[test],dist_type);
+				testLabel=classificate(trainingLabels, indexes, vote_type,
+						 	trainingSetFeatures, testSet[test], dist_type);
+
+				for (int i = 0; i<nOfSamples; i++)
+				{
+					indexes[i] = i;
+				}
+
+				if(testLabel==testSetLabels[test])
+				{
 					correctClass++;
+				}
 			}
-		}
-		if(program_mode==4)
-			classMessage="Classificazione con rete neurale addestrata su tutto il training set";
-		//else if(program_mode==5)
-			//classMessage="Classificazione con rete neurale addestrata con crosstrain";
-		//HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Classificazioni corrette (su 106): ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%i", correctClass);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Tempo di addestramento (circa) in secondi: ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%5f", training_time);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-
-		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-		TIM4->CR1 = 1;
-		calculateOutput(inputNodes,hiddenNodes,outputNodes,testSet[6]);
-		uint32_t time_el = TIM4->CNT;
-		sample_time=(float)time_el;
-		sample_time=sample_time/scaling_time_factor;
-		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%9f", sample_time);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-
-		/*
-				//TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-				//TIM4->CR1 = 1;
-				uint32_t time_el = TIM4->CNT;
-				sample_time=(float)time_el;
-				sample_time=sample_time/scaling_time_factor;*/
+		if(program_mode==0)
+				classMessage="Classificazione tramite k-NN con distanza euclidea e voto di maggioranza";
+			else if(program_mode==1)
+				classMessage="Classificazione tramite k-NN con distanza euclidea e voto pesato";
+			else if(program_mode==2)
+				classMessage="Classificazione tramite k-NN con distanza Manhattan e voto di maggioranza";
+			else if(program_mode==3)
+				classMessage="Classificazione tramite k-NN con distanza Manhattan e voto pesato";
 
 	}
-	else if(program_mode==6)
-	{
-		for(int test=0;test<testSetSize;test++)
-		{
-			testLabel = predictLabel(w,testSet[test],bias);
-			if (testLabel == 1 && testSetLabels[test] == 1)
-						{
-							correctClass++;
-						}
-						else if (testLabel == -1 && testSetLabels[test] == 0)
-						{
-							correctClass++;
-						}
-		}
-		classMessage="Classificazione tramite perceptron classifier";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Classificazioni corrette (su 106): ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%i", correctClass);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		classMessage="Tempo di addestramento (circa) in secondi: ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%5f", training_time);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 
-		TIM4->PSC = HAL_RCC_GetPCLK1Freq()/1000000 - 1;
-		TIM4->CR1 = 1;
-		predictLabel(w,testSet[6], bias);
-		//HAL_Delay(100);
-		uint32_t time_el = TIM4->CNT;
-		sample_time=(float)time_el;
-		sample_time=sample_time/scaling_time_factor;
-		classMessage="Tempo medio per la classificazione di un vettore in ms: ";
-		HAL_UART_Transmit(&huart2, (uint8_t*)classMessage, strlen(classMessage), 0xFFFF);
-		snprintf(buffer, sizeof buffer, "%5f", sample_time);
-		HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-		HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
+	else if(program_mode==4||program_mode==5)
+		{
+			for(int test=0;test<testSetSize;test++)
+			{
+				testLabel=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,testSet[test]);
+				if(testLabel==testSetLabels[test])
+				{
+							correctClass++;
+				}
+			}
+			if(program_mode==4)
+				classMessage="Classificazione con rete neurale addestrata su tutto il training set";
+		}
+		else if(program_mode==6)
+		{
+			for(int test=0;test<testSetSize;test++)
+			{
+				testLabel = predictLabel(w,testSet[test],bias);
+				if (testLabel == 1 && testSetLabels[test] == 1)
+							{
+								correctClass++;
+							}
+							else if (testLabel == -1 && testSetLabels[test] == 0)
+							{
+								correctClass++;
+							}
+			}
 	}
-	//serve per l'eventuale crosstrain
-//	int indexNoTrain[sampleToAvoid * 2] = { 0 };
 
-	//selezione della modalità di funzionamento in base alla variabile "mode"
-	/*
-	switch (mode)
-	{
-	//inizializzazione della rete tramite valori random
-	case WORK_MODE_RANDOM_SETUP:
-		randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
-		break;
-	//caricamento dei valori della rete da valori cablati nella funzione "loadTrainedNetwork"
-	//(sono) valori ricavati da un training, il contenuto della funzione è scritto in console da
-	//"printNetwork"
-	case WORK_MODE_LOAD_NETWORK_FROM_FUNCTION:
-		loadTrainedNetwork(inputNodes, hiddenNodes, outputNodes);
-		break;
-
-	//addestramento della rete utilizzando il training set cablato nel programma
-	case WORK_MODE_TRAIN_FROM_DATA_IN_PROGRAM:
-
-		randomSetupNodes(inputNodes, hiddenNodes, outputNodes);
-
-		//se il crosstrain è abilitato:
-		//suddivido il training set in training e test con percentuali 70 e 30 => 70 vettori di training (35 per ogni classe) e 30 di test (15 per ogni classe)
-		//generazione dei 15+15 indici random
-		if (ct == CROSSTRAIN_ENABLED)
-		{
-			crosstrain(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
-		}
-		//no crosstrain
-		else
-		{
-			train(inputNodes, hiddenNodes, outputNodes,	trainingSetFeatures, trainingLabels);
-		}
-		break;
-	}//fine switch
-	*/
-	//contenitori temporanei per accogliere i dati sensoriali
 	float acc[3] = { 0 };
 	float gyro[3] = { 0 };
 	int cycleNum = 0;
 
-	//contengono i campioni che vengono composti e vengono classificati
 	float sampleToClassify_accelerationX[vectorLength] = { 0 };
 	float sampleToClassify_accelerationY[vectorLength] = { 0 };
 	float sampleToClassify_accelerationZ[vectorLength] = { 0 };
@@ -1697,104 +1450,42 @@ int main(void)
 	float sampleToClassify_gyroY[vectorLength] = { 0 };
 	float sampleToClassify_gyroZ[vectorLength] = { 0 };
 
-	//contenitore per le features del vettore che viene classificato
 	float sampleFeatures[nOfFeatures] = { 0 };
 
-	//int cycleNumber=0;
-
-	/*
-	//test var
-
-	float test[8]={1,7,3,9,10,22,0,6};
-
-	float test_mean = calculateMean(test);
-	snprintf(buffer, sizeof buffer, "%f", test_mean);
-	HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	float var_test=calculateVar(test, test_mean);
-	snprintf(buffer, sizeof buffer, "%f", var_test);
-	HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-
-	float std_dev=sqrt(var_test);
-	snprintf(buffer, sizeof buffer, "%f", std_dev);
-	HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-	HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-*/
-	//etichetta del campione classificato
 	int c_label;
+
+
+
+	int cycleNumber=0;
 	float out_value;
 	char *class="";
 
-	//printNetwork(inputNodes,hiddenNodes,outputNodes);
-int cycleNumber=0;
-if(0==1)
+
+//etichetta del campione classificato
+
+
 	for (;;)
 	{
-		//lettura valori
 		LSM6DSL_ReadAcceleration(acc);
 		LSM6DSL_ReadGyro(gyro);
-//stampa valori ad ogni giro
 
-
-		if(show_sens_data == SHOW_SENS_DATA)
-		{
-		for (int i = 0; i < 3; i++)
-		{
-			snprintf(buffer, sizeof buffer, "%f", acc[i]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) tab, strlen(tab), 0xFFFF);
-		}
-		for (int i = 0; i < 3; i++)
-		{
-			snprintf(buffer, sizeof buffer, "%f", gyro[i]);
-			HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) tab, strlen(tab), 0xFFFF);
-		}
-		HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-		}
-		//se il vettore da classificare non è ancora pieno aggiungo il valore appena letto
 		if (cycleNum < vectorLength)
 		{
 			sampleToClassify_accelerationX[cycleNum] = acc[0];
 			sampleToClassify_accelerationY[cycleNum] = acc[1];
 			sampleToClassify_accelerationZ[cycleNum] = acc[2];
-			/*
-			 for(int i = 0; i<3;i++)
-			 {
-			 snprintf(buffer, sizeof buffer, "%f", acc[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
-			 }
-			 */
+
 			sampleToClassify_gyroX[cycleNum] = gyro[0];
 			sampleToClassify_gyroY[cycleNum] = gyro[1];
 			sampleToClassify_gyroZ[cycleNum] = gyro[2];
-			/*
-			 for(int i = 0; i<3;i++)
-			 {
-			 snprintf(buffer, sizeof buffer, "%f", gyro[i]);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
-			 }
-			 HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-			 */
+
 			cycleNum++;
 		}
-		//altrimenti vengono estratte le features
+
 		else
 		{
-			cycleNumber++;
 			cycleNum = 0;
-/*
-			for(int i = 0; i<vectorLength;i++)
-			{
-				snprintf(buffer, sizeof buffer, "%f", sampleToClassify_gyroX[i]);
-				HAL_UART_Transmit(&huart2, (uint8_t*) buffer, strlen(buffer), 0xFFFF);
-				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline), 0xFFFF);
-			}
-*/
+
 			sampleFeatures[0] = calculateMean(sampleToClassify_accelerationX);
 			sampleFeatures[1] = calculateMean(sampleToClassify_accelerationY);
 			sampleFeatures[2] = calculateMean(sampleToClassify_accelerationZ);
@@ -1807,26 +1498,18 @@ if(0==1)
 			sampleFeatures[9] = sqrt(calculateVar(sampleToClassify_accelerationX,sampleFeatures[3]));
 			sampleFeatures[10] = sqrt(calculateVar(sampleToClassify_accelerationY,sampleFeatures[4]));
 			sampleFeatures[11] = sqrt(calculateVar(sampleToClassify_accelerationZ,sampleFeatures[5]));
-			sampleFeatures[12] = calculateCorr(sampleToClassify_accelerationX,sampleToClassify_gyroX, sampleFeatures[0],sampleFeatures[3]);
-			sampleFeatures[13] = calculateCorr(sampleToClassify_accelerationY,sampleToClassify_gyroY, sampleFeatures[1],sampleFeatures[4]);
-			sampleFeatures[14] = calculateCorr(sampleToClassify_accelerationZ,sampleToClassify_gyroZ, sampleFeatures[2],sampleFeatures[5]);
+			sampleFeatures[12] = calculateCorr(sampleToClassify_accelerationX,sampleToClassify_gyroX,
+					sampleFeatures[0],sampleFeatures[3]);
+			sampleFeatures[13] = calculateCorr(sampleToClassify_accelerationY,sampleToClassify_gyroY,
+					sampleFeatures[1],sampleFeatures[4]);
+			sampleFeatures[14] = calculateCorr(sampleToClassify_accelerationZ,sampleToClassify_gyroZ,
+					sampleFeatures[2],sampleFeatures[5]);
 
-
-			 HAL_UART_Transmit(&huart2, (uint8_t*)openGraffa, strlen(openGraffa), 0xFFFF);
-			 for(int ri = 0; ri<nOfFeatures; ri++)
-			 {
-				 snprintf(buffer, sizeof buffer, "%f", sampleFeatures[ri]);
-				 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-				 HAL_UART_Transmit(&huart2, (uint8_t*)virgola, strlen(virgola), 0xFFFF);
-				 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
-			 }
-			 HAL_UART_Transmit(&huart2, (uint8_t*)closeGraffa, strlen(closeGraffa), 0xFFFF);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
-//vengono normalizzate le features estratte
 			 for (int i=0;i<nOfFeatures;i++)
 			 {
 				 sampleFeatures[i]=sampleFeatures[i]/max_values[i];
 			 }
+
 			 //si calcola l'output della rete fornendo il vettore come input
 			 //c_label = calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
 
@@ -1839,59 +1522,26 @@ if(0==1)
 			 }
 			 else if(program_mode==4||program_mode==5)
 			 {
-			 	c_label=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
+				 c_label=calculateSampleLabel(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
 			 }
 			 else if(program_mode==6)
 			 {
-			 		c_label = predictLabel(w,sampleFeatures,bias);
-			 		break;
+				 c_label = predictLabel(w,sampleFeatures,bias);
 			 }
-
-
-
-
-
-
-			 snprintf(buffer, sizeof buffer, "%i", c_label);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 HAL_UART_Transmit(&huart2, (uint8_t*)tab, strlen(tab), 0xFFFF);
-
-			 //out_value = calculateOutput(inputNodes,hiddenNodes,outputNodes,sampleFeatures);
-			 //snprintf(buffer, sizeof buffer, "%f", out_value);
-			 //HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-
-			 //snprintf(buffer, sizeof buffer, "%i", cycleNumber);
-			 //HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), 0xFFFF);
-			 //per etichetta 0 il campione è considerato come alterato e viene acceso il LED come
-			 //feedback visivo per l'utente, in caso contrario esso viene spento
-/*
 			 if (c_label == 0)
-			{
-				class=" alterato\t\t";
-				BSP_LED_On(LED2);
-			}
-			else
-			{
-				class=" normale\t\t";
-				BSP_LED_Off(LED2);
-			}
-*/
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*)class, strlen(class), 0xFFFF);
-			HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),	0xFFFF);
-/*
-			if(cycleNumber==50)
-			{
-				char *msg2="fine numero50";
-				HAL_UART_Transmit(&huart2, (uint8_t*) newline, strlen(newline),0xFFFF);
-				HAL_UART_Transmit(&huart2, (uint8_t*) msg2, strlen(msg2),0xFFFF);
-			}
-*/
+			 {
+				 BSP_LED_On(LED2);
+			 }
+			 else
+			 {
+				 BSP_LED_Off(LED2);
+			 }
 		}
-		//HAL_UART_Transmit(&huart2, (uint8_t*)newline, strlen(newline), 0xFFFF);
 		HAL_Delay(sampleTime);
 	}
 }
+
+
 //non potendo utilizzare la data e ora (time(NULL)) come seed per la funzione srand di inizializzazione
 //del generatore di numeri casuali si utilizza un valore preso dal sensore (nel caso accelerazione su asse z)
 int Rand_value_acc()
